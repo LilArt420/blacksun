@@ -1,0 +1,21 @@
+# black-sun -- the instance: every party (or solo player) gets its own copy
+# of the two Mt. Mjolnir maps. 1@mjo1 / 1@mjo2 are the client's "Airship
+# Crash" maps; this server has no script of its own on them.
+
+Header:
+  Type: INSTANCE_DB
+  Version: 2
+
+Body:
+  - Id: 4201
+    Name: Black Sun
+    TimeLimit: 5400
+    IdleTimeOut: 600
+    Destroyable: true
+    Enter:
+      Map: 1@mjo1
+      X: 219
+      Y: 379
+    AdditionalMaps:
+      1@mjo2: true
+      nif_fild03: true

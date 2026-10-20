@@ -1,0 +1,44 @@
+// black-sun -- skills of the Black Sun's beasts
+// MobID,Dummy name,State,SkillID,SkillLV,Rate,CastTime,Delay,Cancelable,Target,ConditionType,ConditionValue,val1,val2,val3,val4,val5,Emotion,Chat
+
+// Werewolf (1022): claws that open wounds
+1022,WERE_WOLF@NPC_CRITICALSLASH,attack,170,1,1000,0,5000,yes,target,always,0,,,,,,,
+1022,WERE_WOLF@NPC_BLOODDRAIN,attack,199,3,500,0,5000,yes,target,always,0,,,,,,,
+1022,WERE_WOLF@NPC_WIDEBLEEDING,attack,665,1,300,500,15000,no,self,always,0,,,,,,,
+1022,WERE_WOLF@NPC_DARKNESSATTACK,chase,190,3,1000,0,5000,yes,target,always,0,,,,,,,
+
+// Alpha Werewolf: leads the pack
+26701,BS_ALPHA_WEREWOLF@NPC_CRITICALSLASH,attack,170,1,1500,0,5000,yes,target,always,0,,,,,,,
+26701,BS_ALPHA_WEREWOLF@NPC_WIDEBLEEDING,attack,665,1,800,500,12000,no,self,always,0,,,,,,,
+26701,BS_ALPHA_WEREWOLF@NPC_DARKBREATH,attack,202,3,500,800,10000,no,target,always,0,,,,,,,
+26701,BS_ALPHA_WEREWOLF@NPC_POWERUP,attack,349,3,10000,0,60000,yes,self,myhpltmaxrate,50,,,,,,,
+26701,BS_ALPHA_WEREWOLF@NPC_SPEEDUP,chase,332,1,1000,0,30000,yes,self,always,0,,,,,,,
+
+// Moonfang Wolf / Black Sun Shade / Frostbite Hound: the pack
+26702,BS_MOONFANG_WOLF@NPC_COMBOATTACK,attack,171,3,2000,200,5000,yes,target,always,0,,,,,,,
+26702,BS_MOONFANG_WOLF@NPC_STUNATTACK,attack,179,2,1000,0,5000,yes,target,always,0,,,,,,,
+26703,BS_SHADE_WOLF@NPC_DARKNESSATTACK,attack,190,3,1500,0,5000,yes,target,always,0,,,,,,,
+26703,BS_SHADE_WOLF@NPC_BLOODDRAIN,attack,199,2,800,0,5000,yes,target,always,0,,,,,,,
+26704,BS_FROSTBITE_HOUND@NPC_WATERATTACK,attack,184,3,1500,0,5000,yes,target,always,0,,,,,,,
+26704,BS_FROSTBITE_HOUND@NPC_ICEBREATH,attack,655,1,300,800,15000,no,target,always,0,,,,,,,
+
+// Feral Wereraptor: fast, wind
+26705,BS_WERERAPTOR@NPC_WINDATTACK,attack,187,3,1500,0,5000,yes,target,always,0,,,,,,,
+26705,BS_WERERAPTOR@NPC_COMBOATTACK,attack,171,3,1500,200,5000,yes,target,always,0,,,,,,,
+26705,BS_WERERAPTOR@NPC_THUNDERBREATH,attack,656,1,300,800,15000,no,target,always,0,,,,,,,
+
+// Skoll the Sun-Chaser: fire
+26706,BS_SKOLL@NPC_FIREATTACK,attack,186,3,1500,0,5000,yes,target,always,0,,,,,,,
+26706,BS_SKOLL@NPC_FIREBREATH,attack,654,2,500,800,12000,no,target,always,0,,,,,,,
+26706,BS_SKOLL@NPC_POWERUP,attack,349,2,10000,0,60000,yes,self,myhpltmaxrate,50,,,,,,,
+
+// James, the Black Sun (MVP)
+26710,BS_JAMES@NPC_CRITICALSLASH,attack,170,1,1500,0,5000,yes,target,always,0,,,,,,,
+26710,BS_JAMES@NPC_WIDEBLEEDING,attack,665,1,800,500,15000,no,self,always,0,,,,,,,
+26710,BS_JAMES@NPC_DARKBREATH,attack,202,5,700,800,10000,no,target,always,0,,,,,,,
+26710,BS_JAMES@NPC_HELLJUDGEMENT,attack,662,2,500,800,20000,no,self,always,0,,,,,,,
+26710,BS_JAMES@NPC_WIDECRITICALWOUND,attack,749,1,500,500,20000,no,self,always,0,,,,,,,
+26710,BS_JAMES@NPC_EARTHQUAKE,attack,653,3,10000,1500,30000,no,self,myhpltmaxrate,30,,,,,,,
+26710,BS_JAMES@NPC_POWERUP,attack,349,5,10000,0,90000,yes,self,myhpltmaxrate,50,,,,,,,
+26710,BS_JAMES@NPC_SPEEDUP,chase,332,1,1000,0,30000,yes,self,always,0,,,,,,,
+26710,BS_JAMES@NPC_SUMMONSLAVE,attack,196,2,10000,700,45000,no,self,slavele,1,1022,26702,,,,,

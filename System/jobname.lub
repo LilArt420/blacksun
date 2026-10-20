@@ -1,0 +1,7 @@
+-- black-sun: the beasts' own sprites (data/sprite/monster/), made from the
+-- Druid's werewolf and wereraptor forms by tools/druid_to_monster.py
+JobNameTable = {
+	[26701] = "BS_ALPHA_WEREWOLF",	-- Alpha Werewolf
+	[26705] = "BS_WERERAPTOR",	-- Feral Wereraptor
+	[26710] = "BS_JAMES_WOLF",	-- James, the Black Sun
+}

@@ -1,0 +1,381 @@
+# black-sun -- the monsters of Mt. Mjolnir under the Black Sun
+#
+# The Werewolf (1022) is the stock id, which this server leaves commented out;
+# its sprite is in every client. The rest are new ids in the range kept for
+# mods (25000-31999). Their looks: stock wolves (db/mob_avail.yml), and for the
+# Alpha Werewolves, the Feral Wereraptors and James sprites of the mod's own,
+# made from the Druid's werewolf and wereraptor forms (System/jobname.lub).
+#
+# Strength: the Werewolf is Blue Moon Loli Ruri (20940) a fifth stronger, with
+# 100M HP. The Pack (Horde 1) sits around Royal Nightmare's Horde 1 monsters.
+# Every beast takes 10% of the damage it is dealt (DamageTaken 10); James, the
+# Black Sun takes 1% (DamageTaken 1).
+
+Header:
+  Type: MOB_DB
+  Version: 5
+
+Body:
+  - Id: 1022
+    AegisName: WERE_WOLF
+    Name: Werewolf
+    Level: 255
+    Hp: 100000000
+    BaseExp: 1650000
+    JobExp: 1150000
+    Attack: 17700
+    Attack2: 3350
+    Defense: 480
+    MagicDefense: 190
+    Resistance: 440
+    MagicResistance: 210
+    Str: 240
+    Agi: 200
+    Vit: 190
+    Int: 141
+    Dex: 205
+    Luk: 184
+    AttackRange: 1
+    SkillRange: 10
+    ChaseRange: 12
+    Size: Large
+    Race: Brute
+    Element: Dark
+    ElementLevel: 2
+    WalkSpeed: 130
+    AttackDelay: 510
+    AttackMotion: 1020
+    ClientAttackMotion: 720
+    DamageMotion: 576
+    DamageTaken: 10
+    Ai: 04
+    Modes:
+      Detector: true
+    Drops:
+      - Item: Claw_Of_Wolves
+        Rate: 4500
+      - Item: Wolf_Blood
+        Rate: 2000
+      - Item: Fur
+        Rate: 3000
+      - Item: Blue_Moon_Stone
+        Rate: 1500
+      - Item: Zelunium_Ore
+        Rate: 150
+      - Item: Shadowdecon_Ore
+        Rate: 150
+      - Item: Old_Blue_Box
+        Rate: 50
+
+  - Id: 26701
+    AegisName: BS_ALPHA_WEREWOLF
+    Name: Alpha Werewolf
+    Level: 260
+    Hp: 400000000
+    BaseExp: 9000000
+    JobExp: 6300000
+    Attack: 19500
+    Attack2: 4000
+    Defense: 560
+    MagicDefense: 230
+    Resistance: 520
+    MagicResistance: 300
+    Str: 260
+    Agi: 205
+    Vit: 210
+    Int: 150
+    Dex: 220
+    Luk: 180
+    AttackRange: 1
+    SkillRange: 12
+    ChaseRange: 14
+    Size: Large
+    Race: Brute
+    Element: Dark
+    ElementLevel: 3
+    WalkSpeed: 140
+    AttackDelay: 600
+    AttackMotion: 720
+    DamageMotion: 400
+    DamageTaken: 10
+    Ai: 21
+    Class: Boss
+    Modes:
+      Detector: true
+    Drops:
+      - Item: Claw_Of_Wolves
+        Rate: 7000
+      - Item: Wolf_Blood
+        Rate: 5000
+      - Item: Bloody_Rune
+        Rate: 2000
+      - Item: Zelunium
+        Rate: 1000
+      - Item: Shadowdecon
+        Rate: 1000
+      - Item: Old_Violet_Box
+        Rate: 500
+
+  - Id: 26702
+    AegisName: BS_MOONFANG_WOLF
+    Name: Moonfang Wolf
+    Level: 240
+    Hp: 30000000
+    BaseExp: 500000
+    JobExp: 350000
+    Attack: 12500
+    Attack2: 2000
+    Defense: 450
+    MagicDefense: 150
+    Resistance: 300
+    MagicResistance: 150
+    Str: 230
+    Agi: 140
+    Vit: 130
+    Int: 80
+    Dex: 230
+    Luk: 80
+    AttackRange: 1
+    SkillRange: 10
+    ChaseRange: 12
+    Size: Medium
+    Race: Brute
+    Element: Neutral
+    ElementLevel: 2
+    WalkSpeed: 150
+    AttackDelay: 576
+    AttackMotion: 576
+    ClientAttackMotion: 360
+    DamageMotion: 648
+    DamageTaken: 10
+    Ai: 04
+    Drops:
+      - Item: Claw_Of_Wolves
+        Rate: 4000
+      - Item: Fur
+        Rate: 2500
+      - Item: Zelunium_Ore
+        Rate: 120
+      - Item: Shadowdecon_Ore
+        Rate: 120
+
+  - Id: 26703
+    AegisName: BS_SHADE_WOLF
+    Name: Black Sun Shade
+    Level: 240
+    Hp: 25000000
+    BaseExp: 460000
+    JobExp: 320000
+    Attack: 11800
+    Attack2: 3200
+    Defense: 400
+    MagicDefense: 160
+    Resistance: 280
+    MagicResistance: 220
+    Str: 210
+    Agi: 120
+    Vit: 110
+    Int: 130
+    Dex: 260
+    Luk: 70
+    AttackRange: 1
+    SkillRange: 10
+    ChaseRange: 12
+    Size: Medium
+    Race: Brute
+    Element: Ghost
+    ElementLevel: 3
+    WalkSpeed: 150
+    AttackDelay: 792
+    AttackMotion: 792
+    ClientAttackMotion: 432
+    DamageMotion: 360
+    DamageTaken: 10
+    Ai: 04
+    Drops:
+      - Item: Transparent_Cloth
+        Rate: 1500
+      - Item: Claw_Of_Wolves
+        Rate: 3000
+      - Item: Zelunium_Ore
+        Rate: 120
+      - Item: Shadowdecon_Ore
+        Rate: 120
+
+  - Id: 26704
+    AegisName: BS_FROSTBITE_HOUND
+    Name: Frostbite Hound
+    Level: 238
+    Hp: 20000000
+    BaseExp: 420000
+    JobExp: 290000
+    Attack: 11000
+    Attack2: 4200
+    Defense: 380
+    MagicDefense: 180
+    Resistance: 260
+    MagicResistance: 240
+    Str: 200
+    Agi: 150
+    Vit: 120
+    Int: 120
+    Dex: 220
+    Luk: 70
+    AttackRange: 1
+    SkillRange: 10
+    ChaseRange: 12
+    Size: Medium
+    Race: Brute
+    Element: Water
+    ElementLevel: 3
+    WalkSpeed: 140
+    AttackDelay: 576
+    AttackMotion: 576
+    DamageMotion: 432
+    DamageTaken: 10
+    Ai: 04
+    Drops:
+      - Item: Ice_Piece
+        Rate: 3000
+      - Item: Ice_Fragment
+        Rate: 2000
+      - Item: Claw_Of_Wolves
+        Rate: 2500
+      - Item: Zelunium_Ore
+        Rate: 100
+
+  - Id: 26705
+    AegisName: BS_WERERAPTOR
+    Name: Feral Wereraptor
+    Level: 250
+    Hp: 60000000
+    BaseExp: 1100000
+    JobExp: 780000
+    Attack: 15500
+    Attack2: 3800
+    Defense: 420
+    MagicDefense: 200
+    Resistance: 380
+    MagicResistance: 230
+    Str: 220
+    Agi: 230
+    Vit: 150
+    Int: 120
+    Dex: 240
+    Luk: 120
+    AttackRange: 2
+    SkillRange: 10
+    ChaseRange: 14
+    Size: Medium
+    Race: Brute
+    Element: Wind
+    ElementLevel: 3
+    WalkSpeed: 110
+    AttackDelay: 500
+    AttackMotion: 600
+    DamageMotion: 360
+    DamageTaken: 10
+    Ai: 04
+    Modes:
+      Detector: true
+    Drops:
+      - Item: Feather
+        Rate: 4000
+      - Item: Talon_Of_Griffin
+        Rate: 2500
+      - Item: Sharp_Leaf
+        Rate: 2000
+      - Item: Zelunium_Ore
+        Rate: 150
+      - Item: Shadowdecon_Ore
+        Rate: 150
+
+  - Id: 26706
+    AegisName: BS_SKOLL
+    Name: Skoll the Sun-Chaser
+    Level: 250
+    Hp: 150000000
+    BaseExp: 3000000
+    JobExp: 2100000
+    Attack: 16500
+    Attack2: 3500
+    Defense: 520
+    MagicDefense: 210
+    Resistance: 450
+    MagicResistance: 280
+    Str: 250
+    Agi: 180
+    Vit: 200
+    Int: 120
+    Dex: 210
+    Luk: 120
+    AttackRange: 2
+    SkillRange: 12
+    ChaseRange: 14
+    Size: Large
+    Race: Brute
+    Element: Fire
+    ElementLevel: 3
+    WalkSpeed: 140
+    AttackDelay: 608
+    AttackMotion: 408
+    DamageMotion: 336
+    DamageTaken: 10
+    Ai: 21
+    Class: Boss
+    Modes:
+      Detector: true
+    Drops:
+      - Item: Fang_Of_Garm
+        Rate: 3000
+      - Item: Claw_Of_Garm
+        Rate: 3000
+      - Item: Oridecon
+        Rate: 1500
+      - Item: Elunium
+        Rate: 1500
+      - Item: Old_Blue_Box
+        Rate: 300
+
+  # The climax: James Wolf, surrendered to the Black Sun. 2,000,000,000 HP, and
+  # DamageTaken 1 -- every hit lands at 1% (never below 1). No item drops: his
+  # reward is the Black Sun's own, in the chest that appears where he falls
+  # (npc/black_sun.txt, Spoils of the Black Sun).
+  - Id: 26710
+    AegisName: BS_JAMES
+    Name: James, the Black Sun
+    Level: 260
+    Hp: 2000000000
+    BaseExp: 450000
+    JobExp: 380000
+    Attack: 24000
+    Attack2: 6000
+    Defense: 650
+    MagicDefense: 320
+    Resistance: 600
+    MagicResistance: 500
+    Str: 280
+    Agi: 210
+    Vit: 230
+    Int: 150
+    Dex: 250
+    Luk: 160
+    AttackRange: 2
+    SkillRange: 14
+    ChaseRange: 16
+    Size: Large
+    Race: Brute
+    Element: Dark
+    ElementLevel: 4
+    WalkSpeed: 140
+    AttackDelay: 600
+    AttackMotion: 720
+    DamageMotion: 400
+    DamageTaken: 1
+    Ai: 21
+    Class: Boss
+    Modes:
+      Mvp: true
+      Detector: true
+      TeleportBlock: true
+      KnockBackImmune: true

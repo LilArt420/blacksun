@@ -1,0 +1,20 @@
+# black-sun -- what the new monsters look like
+#
+# The wolves wear stock monster sprites. The Alpha Werewolves, the Feral
+# Wereraptors and James have sprites of their own (System/jobname.lub,
+# data/sprite/monster/): a player's look would make the client treat them as
+# players, which can't be clicked to attack.
+
+Header:
+  Type: MOB_AVAIL_DB
+  Version: 1
+
+Body:
+  - Mob: BS_MOONFANG_WOLF
+    Sprite: EP18_GREY_WOLF
+  - Mob: BS_SHADE_WOLF
+    Sprite: EP18_PHANTOM_WOLF
+  - Mob: BS_FROSTBITE_HOUND
+    Sprite: FROZENWOLF
+  - Mob: BS_SKOLL
+    Sprite: GARM

@@ -1,0 +1,17 @@
+# black-sun -- Nightwing's wereraptor shape
+#
+# The Druid's Wereraptor status carries a player-only script (bonus
+# bMaxHPrate / bSpeedRate), and the server refuses to start a scripted status
+# on an NPC. Flowersmoke has no script, is declared by the server and used by
+# nothing on it (no skill, item or NPC starts it), and already shows on other
+# units (BlEffect, DisplayPc). With the wereraptor icon, the client draws
+# whoever has it as the Druid's wereraptor form. Only npc/black_sun.txt
+# starts it, on Nightwing.
+
+Header:
+  Type: STATUS_DB
+  Version: 4
+
+Body:
+  - Status: Flowersmoke
+    Icon: EFST_WERERAPTOR
