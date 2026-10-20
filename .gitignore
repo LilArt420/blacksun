@@ -1,0 +1,6 @@
+# the portrait work-in-progress (sources, candidates, one-off scripts) stays local
+art/
+.DS_Store
+__MACOSX/
+build/
+*.zip
