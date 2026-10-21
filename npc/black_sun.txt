@@ -14,19 +14,23 @@
 // Every stage spawns all of its beasts at once when it starts, and each holds
 // more than the one before. Every beast takes 10% of the damage it's dealt.
 // - 1@mjo1, the Crag:
-//     Horde 1, the Pack: 150 each of Moonfang Wolf, Black Sun Shade and
-//       Frostbite Hound; 100 of each to kill
+//     Horde 1, the Pack: 210 each of Moonfang Wolf, Black Sun Shade and
+//       Frostbite Hound; 150 of each to kill
 //     the three Alpha Werewolves and their packs (Nightwing turns into a
 //       wereraptor)
-//     Horde 2, the Black Sun rising: 300 each of Werewolf, Feral Wereraptor
-//       and Black Sun Shade; 200 of each to kill
+//     Horde 2, the Black Sun rising: 420 each of Werewolf, Feral Wereraptor
+//       and Black Sun Shade; 300 of each to kill
 //     James, who throws everyone down the far side of the ridge
-// - 1@mjo2, the Climb: 500 each of Werewolf, Frostbite Hound and Moonfang
-//   Wolf on the switchbacks to the summit, frozen and staring until the
-//   climbers have landed; 350 of each open the summit
+// - 1@mjo2, the Climb: 700 each of Werewolf, Frostbite Hound and Moonfang
+//   Wolf scattered over the whole mountainside, frozen and staring until the
+//   climbers have landed (320, 79); 500 of each open the summit
 // - Niflheim: James surrenders to the Black Sun and becomes the MVP,
 //   James, the Black Sun (2,000,000,000 HP, takes 1% damage). While anyone is
-//   near him, the Black Sun calls 35 beasts every 15 seconds.
+//   near him, the Black Sun calls 35 beasts every 15 seconds (his werewolf face
+//   flashes up), and 3 Werewolves halfway between. When he falls, the chest of
+//   spoils appears, and James comes back to himself once it has been opened.
+// - Whenever there's someone to find, Nightwing says where, with a navigation
+//   link (BS_Point).
 // - His reward is the Black Sun's, in a chest where he falls: base and job
 //   EXP (10% of a level each), a Grey Wolf Cub in Mouth, a Wolf Orb (Above
 //   All) Lv 3, 5 King Wolf Scrolls, 500 Premium Black Coins and a Premium
@@ -66,8 +70,10 @@ function	script	BS_IsOwner	{
 
 // Portrait pop-ups (cutin). The mod's own (data/texture/ui/illust/):
 // 1 Nightwing (Royal Nightmare's), 4 John, and James: 5 himself, 6 the wolf
-// breaking through, 3 the Black Sun's werewolf. The client's own Druid art:
-// 2 Nightwing as a wereraptor. 0 hides it.
+// breaking through, 7 the wolf winning, 3 the Black Sun's werewolf; 8 the
+// Alpha Werewolves (the
+// client's Druid werewolf, mirrored to face Nightwing). The client's own Druid
+// art: 2 Nightwing as a wereraptor. 0 hides it.
 function	script	BS_Portrait	{
 	.@id = getarg(0);
 	if (.@id == 1)      cutin "bs_nightwing.bmp", 2;
@@ -76,6 +82,8 @@ function	script	BS_Portrait	{
 	else if (.@id == 4) cutin "bs_john.bmp", 0;
 	else if (.@id == 5) cutin "bs_james.bmp", 2;		// James, himself
 	else if (.@id == 6) cutin "bs_james_feral.bmp", 2;	// James, the wolf breaking through
+	else if (.@id == 7) cutin "bs_james_feral2.bmp", 2;	// James, the wolf winning
+	else if (.@id == 8) cutin "bs_alpha_varg.png", 0;	// the Alpha Werewolves, facing Nightwing
 	else cutin "", 255;
 	return;
 }
@@ -87,6 +95,14 @@ function	script	BS_Portrait	{
 // The beasts are monsters with sprites of their own (data/sprite/monster/,
 // System/jobname.lub), made from the Druid's forms, so they can be clicked
 // and targeted like any monster. Every monster of the run spawns large.
+
+// A navigation link to a spot on one of the run's maps, which the client knows
+// by their own names (1@mjo1, 1@mjo2, nif_fild03). Clicking it opens the
+// navigation; the coordinates are never shown.
+//   callfunc("BS_Navi", "<text>", "<map>", <x>, <y>)
+function	script	BS_Navi	{
+	return "<NAVI>" + getarg(0) + "<INFO>" + getarg(1) + "," + getarg(2) + "," + getarg(3) + ",0,000,0</INFO></NAVI>";
+}
 
 // The Black Sun's spoils for the attached character, and their 8 hour
 // cooldown: base and job EXP (10% of their current level each) and five
@@ -319,7 +335,7 @@ OnPCLoadMapEvent:
 		mes "^FF0000The Black Sun is rising.^000000 Every beast on this mountain is answering it: werewolves, and wereraptors. Poor wretches. That's what my gift looks like with no mind left behind it.";
 		next;
 		mes "[Nightwing]";
-		mes "Everything James could become is coming up that slope. Cut down ^FF000040 Werewolves, 50 Wereraptors and 80 Shades^000000, and I'll find him.";
+		mes "Everything James could become is coming up that slope. Cut down ^FF0000300 each of Werewolves, Wereraptors and Shades^000000, and I'll find him.";
 		callfunc "BS_Portrait", 0;
 		close2;
 		hideonnpc instance_npcname("Nightwing#BS");
@@ -384,9 +400,9 @@ OnInstanceInit:
 	'bs_sky = 1;
 	'bs_skySent = 100;
 	// nif_fild03 is an ordinary field: its warps and other NPCs were copied in
-	// with it. Only the run's own four stay.
+	// with it. Only the run's own five stay.
 	.@m$ = instance_mapname("nif_fild03");
-	setarray .@mine[0], getnpcid(0, instance_npcname("James Wolf#BS3")), getnpcid(0, instance_npcname("John Wolf#BS3")), getnpcid(0, instance_npcname("Nightwing#BS3")), getnpcid(0, instance_npcname("Spoils of the Black Sun#BS3"));
+	setarray .@mine[0], getnpcid(0, instance_npcname("James Wolf#BS3")), getnpcid(0, instance_npcname("John Wolf#BS3")), getnpcid(0, instance_npcname("Nightwing#BS3")), getnpcid(0, instance_npcname("Spoils of the Black Sun#BS3")), getnpcid(0, instance_npcname("BS_Point#3"));
 	.@n = getmapunits(BL_NPC, .@m$, .@gid);
 	for (.@i = 0; .@i < .@n; .@i++) {
 		if (inarray(.@mine, .@gid[.@i]) >= 0) continue;
@@ -404,7 +420,7 @@ OnHorde1:
 	'bs_stage = 1;
 	'bs_cfg = 1;
 	callsub L_StartHorde, 1;
-	instance_announce 0, "[Nightwing]: The Pack is everywhere! 450 beasts! Cut down 100 each of Moonfang Wolf, Black Sun Shade and Frostbite Hound!", bc_map, "0x99CCFF";
+	instance_announce 0, "[Nightwing]: The Pack is everywhere! 630 beasts! Cut down 150 each of Moonfang Wolf, Black Sun Shade and Frostbite Hound!", bc_map, "0x99CCFF";
 	end;
 
 // --- the Alpha Werewolves: around the leader, frozen, howling, then free ---
@@ -424,7 +440,6 @@ OnAlphas:
 	hideonnpc .@nw$;
 	hideoffnpc .@nw$;
 	specialeffect EF_BEGINSPELL7, AREA, .@nw$;
-	npctalk "Stay behind me, cousin's friend!", .@nw$;
 	setarray .@dx[0], 5, -5, 0;
 	setarray .@dy[0], 3, 3, -5;
 	for (.@i = 0; .@i < 3; .@i++) {
@@ -439,11 +454,22 @@ OnAlphas:
 		}
 	}
 	instance_announce 0, "[Black Sun]: Three Alpha Werewolves and their packs close in from the dark!", bc_map, "0xFF0000";
-	for (.@t = 0; .@t < 3; .@t++) {
-		for (.@i = 0; .@i < 3; .@i++)
-			if (unitexists(.@a[.@i])) unittalk .@a[.@i], (.@t == 2 ? "Give us the boy!" : "Join the pack!");
-		sleep 1000;
+	for (.@i = 0; .@i < 3; .@i++)
+		if (unitexists(.@a[.@i])) unittalk .@a[.@i], "Join the pack!";
+	// the alphas and Nightwing face off in a dialogue for everyone on the crag
+	// (BS_Point#1::OnAlphaTalk); they stay frozen until the leader closes it, or
+	// 30 seconds pass
+	.@n = getmapunits(BL_PC, .@m$, .@pc);
+	for (.@i = 0; .@i < .@n; .@i++) {
+		if (!attachrid(.@pc[.@i])) continue;
+		addtimer 500, instance_npcname("BS_Point#1") + "::OnAlphaTalk";
+		detachrid;
 	}
+	end;
+
+// The leader closed the face-off: the alphas and their packs attack
+OnAlphaWake:
+	if ('bs_stage != 3 || !'bs_wake) end;
 	callsub L_Wake;
 	instance_announce 0, "[Nightwing]: Now! Bring them down!", bc_map, "0x99CCFF";
 	end;
@@ -464,7 +490,7 @@ OnHorde2:
 	'bs_stage = 5;
 	'bs_cfg = 2;
 	callsub L_StartHorde, 2;
-	instance_announce 0, "[Nightwing]: Werewolves and wereraptors, 900 of them! Cut down 200 each of Werewolf, Feral Wereraptor and Black Sun Shade!", bc_map, "0x99CCFF";
+	instance_announce 0, "[Nightwing]: Werewolves and wereraptors, 1,260 of them! Cut down 300 each of Werewolf, Feral Wereraptor and Black Sun Shade!", bc_map, "0x99CCFF";
 	end;
 
 // Kills of slot 0 / 1 / 2 of the current stage (Horde 1, Horde 2, the Climb)
@@ -512,42 +538,26 @@ OnClimb:
 	deletearray 'bs_k;
 	callsub L_Cfg, 3;
 	hideonnpc instance_npcname("Nightwing#BS");
-	instance_warpall instance_mapname("1@mjo2"), 381, 366, instance_id();
+	instance_warpall instance_mapname("1@mjo2"), 320, 79, instance_id();
 	.@m$ = instance_mapname("1@mjo2");
-	// two rows of beasts up the switchbacks, each turned down the path
-	setarray .@x[0], 368, 362, 358, 353, 351, 347, 351, 346, 351, 345, 342, 339, 330, 330, 321, 321, 312, 312, 303, 300, 301, 297, 289, 289, 280, 280, 271, 271, 262, 262, 253, 253, 244, 244, 238, 234, 226, 226, 220, 216, 208, 208, 201, 202, 202, 203, 202, 203, 201, 202, 203, 204;
-	setarray .@y[0], 360, 366, 353, 358, 346, 346, 337, 337, 325, 331, 316, 319, 313, 317, 313, 317, 313, 319, 311, 311, 299, 303, 290, 293, 290, 295, 290, 295, 288, 293, 288, 294, 288, 294, 283, 287, 279, 282, 278, 282, 276, 279, 283, 283, 292, 292, 301, 301, 310, 310, 319, 319;
-	setarray .@d[0], 7, 6, 7, 6, 7, 7, 0, 7, 0, 7, 0, 7, 7, 6, 6, 6, 6, 6, 7, 6, 0, 7, 7, 7, 6, 6, 6, 6, 7, 6, 6, 6, 6, 6, 7, 6, 7, 6, 7, 6, 7, 6, 5, 5, 4, 4, 4, 4, 4, 4, 4, 4;
+	// 700 of each kind (and 8 Skolls, who don't count) scattered over the whole
+	// mountainside, frozen, at least 20 cells from where everyone lands and
+	// turned to stare at it
 	'bs_wake = gettimetick(2) + 30;
 	'bs_gaunN = 0;
-	freeloop 1;	// 1,500 beasts to freeze in one go
-	for (.@i = 0; .@i < 52; .@i++) {
-		// the three kinds in turn, with a Skoll (who doesn't count) every sixth place
-		.@t = .@i % 3;
-		if (.@i % 6 == 5) {
-			.@id = 26706;
-			.@ev$ = "";
-		} else {
-			.@id = .id[.@t];
-			.@ev$ = "OnK" + .@t;
-			.@placed[.@t]++;
+	freeloop 1;	// 2,100 beasts to place and freeze in one go
+	for (.@t = 0; .@t < 4; .@t++) {
+		.@id = (.@t < 3 ? .id[.@t] : 26706);
+		.@n = (.@t < 3 ? .spawn[.@t] : 8);
+		.@ev$ = (.@t < 3 ? instance_npcname("BS_Engine") + "::OnK" + .@t : "");
+		for (.@i = 0; .@i < .@n; .@i++) {
+			for (.@try = 0; .@try < 50; .@try++) {
+				getfreecell(.@m$, .@x, .@y);
+				if (distance(.@x, .@y, 320, 79) >= 20) break;
+			}
+			monster .@m$, .@x, .@y, "--ja--", .@id, 1, .@ev$, Size_Large;
+			callsub L_Freeze, $@mobid[0], 320, 79;
 		}
-		callsub L_SpawnAt, .@m$, .@x[.@i], .@y[.@i], "--ja--", .@id, .@ev$;
-		.@g = $@mobid[0];
-		if (!.@g || !unitexists(.@g)) continue;
-		getunitdata .@g, .@md;
-		'bs_gaunGID['bs_gaunN] = .@g;
-		'bs_gaunMode['bs_gaunN] = .@md[UMOB_MODE];
-		'bs_gaunN++;
-		setunitdata .@g, UMOB_MODE, 0;
-		setunitdata .@g, UMOB_LOOKDIR, .@d[.@i];
-	}
-	// the rest of each kind over the lower slopes, frozen too, at least 25 cells
-	// from where everyone lands and turned to stare at it
-	for (.@t = 0; .@t < 3; .@t++) {
-		.@n = .spawn[.@t] - .@placed[.@t];
-		areamonster .@m$, 200, 250, 355, 345, "--ja--", .id[.@t], .@n, instance_npcname("BS_Engine") + "::OnK" + .@t, Size_Large;
-		for (.@i = 0; .@i < .@n; .@i++) callsub L_Freeze, $@mobid[.@i], 381, 366;
 	}
 	freeloop 0;
 	end;
@@ -556,7 +566,7 @@ OnClimbWake:
 	callsub L_Wake;
 	end;
 
-// 350 of each kind are down: the summit opens
+// 500 of each kind are down: the summit opens
 L_ClimbDone:
 	'bs_stage = 8;
 	killmonster instance_mapname("1@mjo2"), "All";
@@ -603,10 +613,9 @@ OnJamesKill:
 	'bs_mvp = 0;
 	'bs_sky = 0;
 	killmonster instance_mapname("nif_fild03"), "All";
-	hideoffnpc instance_npcname("James Wolf#BS3");
 	hideoffnpc instance_npcname("Spoils of the Black Sun#BS3");
 	specialeffect EF_BEGINSPELL7, AREA, instance_npcname("Spoils of the Black Sun#BS3");
-	instance_announce 0, "[Nightwing]: The Black Sun is setting! James... James is himself again!", bc_map, "0x99CCFF";
+	instance_announce 0, "[Nightwing]: The Black Sun is setting! James is down...", bc_map, "0x99CCFF";
 	instance_announce 0, "[Black Sun]: The Black Sun's spoils lie where James fell. Everyone, open the chest and take your share!", bc_map, "0xFFCC00";
 	end;
 
@@ -652,17 +661,38 @@ OnTimer1000:
 	// the landing on the crag stays clear while the hordes are out
 	if ('bs_stage == 1 || 'bs_stage == 5) callsub L_SafeZone;
 
-	// the finale: the Black Sun calls a ring of beasts around whoever is near James
-	if ('bs_stage == 10 && 'bs_mvp && gettimetick(2) >= 'bs_addTime) {
+	// the finale: every 15 seconds the Black Sun calls 35 beasts around one of
+	// the fighters near James, picked at random (his werewolf face flashes up
+	// for everyone on the field), and halfway between, 3 Werewolves
+	if ('bs_cutOff && gettimetick(2) >= 'bs_cutOff) {
+		'bs_cutOff = 0;
+		callsub L_MapCutin, "nif_fild03", "", 255;
+	}
+	if ('bs_stage == 10 && 'bs_mvp) {
 		.@m$ = instance_mapname("nif_fild03");
-		'bs_addTime = gettimetick(2) + 3;	// nobody near: look again soon
-		if (unitexists('bs_mvp) && getmapunits(BL_MOB, .@m$) < 175) {
+		.@wave = 0;
+		if (gettimetick(2) >= 'bs_addTime) .@wave = 35;
+		else if ('bs_wolfTime && gettimetick(2) >= 'bs_wolfTime) .@wave = 3;
+		if (.@wave && unitexists('bs_mvp) && getmapunits(BL_MOB, .@m$) < 175) {
 			getunitdata 'bs_mvp, .@md;
 			.@n = getmapunits(BL_PC, .@m$, .@pc);
+			.@k = 0;
 			for (.@i = 0; .@i < .@n; .@i++) {
 				getmapxy(.@pm$, .@px, .@py, BL_PC, rid2name(.@pc[.@i]));
 				if (.@pm$ == .@m$ && distance(.@px, .@py, .@md[UMOB_X], .@md[UMOB_Y]) <= 14) {
-					// 35 a cycle
+					.@nx[.@k] = .@px;
+					.@ny[.@k] = .@py;
+					.@k++;
+				}
+			}
+			if (.@k) {
+				// rand(1) is an error that ends this loop, and rAthena's ?: works out
+				// both sides, so this has to be an if
+				.@r = 0;
+				if (.@k > 1) .@r = rand(.@k);
+				.@px = .@nx[.@r];
+				.@py = .@ny[.@r];
+				if (.@wave == 35) {
 					callsub L_SpawnRing, .@m$, .@px, .@py, 7, 1022, 5, "";
 					callsub L_SpawnRing, .@m$, .@px, .@py, 7, 26705, 7, "";
 					callsub L_SpawnRing, .@m$, .@px, .@py, 5, 26702, 8, "";
@@ -670,10 +700,29 @@ OnTimer1000:
 					callsub L_SpawnRing, .@m$, .@px, .@py, 9, 26704, 7, "";
 					instance_announce 0, "[Black Sun]: The Black Sun calls its beasts to James's side!", bc_map, "0xFF6600";
 					'bs_addTime = gettimetick(2) + 15;
-					break;
+					'bs_wolfTime = gettimetick(2) + 7;
+					'bs_cutOff = gettimetick(2) + 3;
+					callsub L_MapCutin, "nif_fild03", "bs_james_wolf.bmp", 2;
+				} else {
+					callsub L_SpawnRing, .@m$, .@px, .@py, 4, 1022, 3, "";
+					'bs_wolfTime = 0;
 				}
+			} else if (.@wave == 35) {
+				'bs_addTime = gettimetick(2) + 3;	// nobody near: look again soon
 			}
 		}
+	}
+
+	// James comes back to himself once everyone on the field has taken their
+	// share from the chest (or a minute after the leader took theirs); the
+	// chest asks too, the moment someone opens it
+	if ('bs_stage == 11 && !'bs_jamesBack) callsub L_JamesBack;
+
+	// Nightwing points the way whenever there's someone to find
+	if ('bs_pointSent != 'bs_stage * 10 + 'bs_jamesBack) {
+		'bs_pointSent = 'bs_stage * 10 + 'bs_jamesBack;
+		if ('bs_stage == 2 || 'bs_stage == 4 || 'bs_stage == 6 || 'bs_stage == 8 || 'bs_stage == 9 || 'bs_stage == 11)
+			callsub L_Point;
 	}
 
 	// the HUD
@@ -693,6 +742,7 @@ OnTimer1000:
 	case 8:  .@info$ = "Talk to Nightwing at the summit"; break;
 	case 9:  .@info$ = "Talk to James"; break;
 	case 10: .@info$ = "James, the Black Sun"; break;
+	case 11: .@info$ = ('bs_jamesBack ? "Talk to James" : "Open the chest where James fell"); break;
 	default: .@info$ = "Talk to James";
 	}
 	setarray .@maps$[0], "1@mjo1", "1@mjo2", "nif_fild03";
@@ -725,20 +775,20 @@ L_Cfg:
 		setarray .id[0], 26702, 26703, 26704;
 		setarray .nm$[0], "Moonfang Wolf", "Black Sun Shade", "Frostbite Hound";
 		setarray .ab$[0], "MW", "BS", "FH";
-		setarray .goal[0], 100, 100, 100;
-		setarray .spawn[0], 150, 150, 150;
+		setarray .goal[0], 150, 150, 150;
+		setarray .spawn[0], 210, 210, 210;
 	} else if (getarg(0) == 2) {
 		setarray .id[0], 1022, 26705, 26703;
 		setarray .nm$[0], "Werewolf", "Feral Wereraptor", "Black Sun Shade";
 		setarray .ab$[0], "WW", "WR", "BS";
-		setarray .goal[0], 200, 200, 200;
-		setarray .spawn[0], 300, 300, 300;
+		setarray .goal[0], 300, 300, 300;
+		setarray .spawn[0], 420, 420, 420;
 	} else {
 		setarray .id[0], 1022, 26704, 26702;
 		setarray .nm$[0], "Werewolf", "Frostbite Hound", "Moonfang Wolf";
 		setarray .ab$[0], "WW", "FH", "MW";
-		setarray .goal[0], 350, 350, 350;
-		setarray .spawn[0], 500, 500, 500;
+		setarray .goal[0], 500, 500, 500;
+		setarray .spawn[0], 700, 700, 700;
 	}
 	return;
 
@@ -831,6 +881,55 @@ L_SafeZone:
 	}
 	return;
 
+// The chest was opened: is everyone on the field done with it?
+OnChestTaken:
+	if ('bs_stage == 11 && !'bs_jamesBack) callsub L_JamesBack;
+	end;
+
+// James wakes once everyone on the field has their share (or a minute after
+// the leader took theirs)
+L_JamesBack:
+	.@n = getmapunits(BL_PC, instance_mapname("nif_fild03"), .@pc);
+	.@all = (.@n > 0);
+	for (.@i = 0; .@i < .@n; .@i++) {
+		if (!attachrid(.@pc[.@i])) continue;
+		if (BS_Rewarded != 'bs_run) .@all = 0;
+		detachrid;
+	}
+	if (!.@all && !('bs_leaderTook && gettimetick(2) >= 'bs_leaderTook + 60)) return;
+	'bs_jamesBack = 1;
+	hideoffnpc instance_npcname("James Wolf#BS3");
+	specialeffect EF_BEGINSPELL7, AREA, instance_npcname("James Wolf#BS3");
+	instance_announce 0, "[Nightwing]: Look... James is himself again!", bc_map, "0x99CCFF";
+	return;
+
+// A cut-in for everyone in the run on one of its maps ("1@mjo1", "1@mjo2",
+// "nif_fild03"); "", 255 takes it down.
+//   callsub L_MapCutin, "<map>", "<file>", <position>;
+L_MapCutin:
+	.@n = getmapunits(BL_PC, instance_mapname(getarg(0)), .@pc);
+	for (.@i = 0; .@i < .@n; .@i++) {
+		if (!attachrid(.@pc[.@i])) continue;
+		cutin getarg(1), getarg(2);
+		detachrid;
+	}
+	return;
+
+// Nightwing tells everyone in the run where to go next (BS_Point on their
+// map), once their map has loaded
+L_Point:
+	setarray .@maps$[0], "1@mjo1", "1@mjo2", "nif_fild03";
+	for (.@mp = 0; .@mp < 3; .@mp++) {
+		.@ev$ = instance_npcname("BS_Point#" + (.@mp + 1)) + "::OnPoint";
+		.@n = getmapunits(BL_PC, instance_mapname(.@maps$[.@mp]), .@pc);
+		for (.@i = 0; .@i < .@n; .@i++) {
+			if (!attachrid(.@pc[.@i])) continue;
+			addtimer 1500, .@ev$;
+			detachrid;
+		}
+	}
+	return;
+
 // Tells everyone in the run how dark the sky is ('bs_sky, client/index.js)
 L_Sky:
 	setarray .@maps$[0], "1@mjo1", "1@mjo2", "nif_fild03";
@@ -845,6 +944,77 @@ L_Sky:
 	return;
 }
 
+// Where to go next: Nightwing's word, with a navigation link. L_Point sends it
+// with addtimer to everyone in the run, from the copy on their own map.
+1@mjo1,1,1,0	script	BS_Point#1	-1,{
+	end;
+// The Alpha Werewolves face Nightwing (OnAlphas sends it to everyone on the crag)
+OnAlphaTalk:
+	if ('bs_stage != 3 || !'bs_wake) end;
+	callfunc "BS_Portrait", 8;
+	mes "[Alpha Werewolf]";
+	mes "The boy's blood answers the Black Sun. He belongs to us now.";
+	mes "^FF0000Join the pack!^000000";
+	next;
+	callfunc "BS_Portrait", 2;
+	mes "[Nightwing]";
+	mes "Stay behind me, cousin's friend!";
+	next;
+	callfunc "BS_Portrait", 8;
+	mes "[Alpha Werewolf]";
+	mes "^FF0000Give us the boy!^000000";
+	next;
+	callfunc "BS_Portrait", 2;
+	mes "[Nightwing]";
+	mes "You'll have to go through me!";
+	close2;
+	callfunc "BS_Portrait", 0;
+	if (getcharid(0) == 'bs_owner) donpcevent instance_npcname("BS_Engine") + "::OnAlphaWake";
+	end;
+OnPoint:
+	.@stage = 'bs_stage;
+	switch (.@stage) {
+	case 2:
+	case 4:
+		getmapxy(.@nm$, .@x, .@y, BL_NPC, instance_npcname("Nightwing#BS"));
+		.@to$ = callfunc("BS_Navi", "here", "1@mjo1", .@x, .@y);
+		if (.@stage == 2) .@say$ = "The Pack is breaking! I'm over " + .@to$ + ", quickly!";
+		else .@say$ = "The alphas are dead... and the Black Sun is rising. Come to me, over " + .@to$ + "!";
+		break;
+	case 6:
+		getmapxy(.@nm$, .@x, .@y, BL_NPC, instance_npcname("James Wolf#BS"));
+		.@say$ = "There! " + callfunc("BS_Navi", "James", "1@mjo1", .@x, .@y) + "! Talk to him, before the Black Sun does!";
+		break;
+	case 8:
+		getmapxy(.@nm$, .@x, .@y, BL_NPC, instance_npcname("Nightwing#BS2"));
+		.@say$ = "The path is clear! John is waiting at the " + callfunc("BS_Navi", "summit", "1@mjo2", .@x, .@y) + ". I'll meet you there!";
+		break;
+	case 9:
+		getmapxy(.@nm$, .@x, .@y, BL_NPC, instance_npcname("James Wolf#BS3"));
+		.@say$ = "There he is... " + callfunc("BS_Navi", "James", "nif_fild03", .@x, .@y) + ". Let John speak to him.";
+		break;
+	case 11:
+		if ('bs_jamesBack) {
+			getmapxy(.@nm$, .@x, .@y, BL_NPC, instance_npcname("James Wolf#BS3"));
+			.@say$ = "Look... " + callfunc("BS_Navi", "James", "nif_fild03", .@x, .@y) + " is waking up! Go to him.";
+		} else {
+			getmapxy(.@nm$, .@x, .@y, BL_NPC, instance_npcname("Spoils of the Black Sun#BS3"));
+			.@say$ = "He's down! The Black Sun's spoils lie " + callfunc("BS_Navi", "where James fell", "nif_fild03", .@x, .@y) + ". Take your share!";
+		}
+		break;
+	default:
+		end;
+	}
+	callfunc "BS_Portrait", (.@stage >= 3 ? 2 : 1);
+	mes "[Nightwing]";
+	mes .@say$;
+	close2;
+	callfunc "BS_Portrait", 0;
+	end;
+}
+1@mjo2,1,1,0	duplicate(BS_Point#1)	BS_Point#2	-1
+nif_fild03,1,1,0	duplicate(BS_Point#1)	BS_Point#3	-1
+
 // === The Climb and the summit: 1@mjo2 ========================================
 
 // The leader's introduction to the Climb (addtimer, once their map has loaded)
@@ -852,12 +1022,12 @@ L_Sky:
 	end;
 OnIntro:
 	if ('bs_stage != 7 || !'bs_wake) end;
-	mes "^8B008BYou land hard among the switchbacks below the summit.^000000";
-	mes "^8B008BAlong every turn of the path the mountain's beasts stand frozen, staring up at the Black Sun... and one by one, every head turns to stare at you.^000000";
+	mes "^8B008BYou land hard at the foot of the mountain's last slopes, far below the summit.^000000";
+	mes "^8B008BAll over the mountainside the beasts stand frozen, staring up at the Black Sun... and one by one, every head turns to stare at you.^000000";
 	next;
 	callfunc "BS_Portrait", 2;
 	mes "[Nightwing]";
-	mes "^FF0000Climb! Cut your way up to him! 350 of each kind, and the summit is ours!^000000";
+	mes "^FF0000Climb! Cut your way up to the " + callfunc("BS_Navi", "summit", "1@mjo2", 184, 349) + "! 500 of each kind, and it's ours!^000000";
 	callfunc "BS_Portrait", 0;
 	close2;
 	donpcevent instance_npcname("BS_Engine") + "::OnClimbWake";
@@ -957,8 +1127,10 @@ nif_fild03,205,194,4	script	Spoils of the Black Sun#BS3	10405,{
 		close;
 	}
 	BS_Rewarded = 'bs_run;
+	if (getcharid(0) == 'bs_owner && !'bs_leaderTook) 'bs_leaderTook = gettimetick(2);
 	callfunc "BS_GiveRewards", 0;
 	specialeffect2 EF_GLORIA;
+	donpcevent instance_npcname("BS_Engine") + "::OnChestTaken";
 	end;
 OnInit:
 	hideonnpc "Spoils of the Black Sun#BS3";
@@ -972,11 +1144,11 @@ nif_fild03,202,196,4	script	James Wolf#BS3	10295,{
 	if (!callfunc("BS_IsOwner", "James Wolf", instance_id())) end;
 
 	if ('bs_stage == 9) {
-		callfunc "BS_Portrait", 5;
+		callfunc "BS_Portrait", 6;
 		mes "[James Wolf]";
 		mes "John... you came. You always come.";
 		next;
-		callfunc "BS_Portrait", 5;
+		callfunc "BS_Portrait", 6;
 		mes "[James Wolf]";
 		mes "Look up, brother. Even down here you can see it. The sun, with a hole burned right through its heart.";
 		next;
@@ -984,11 +1156,11 @@ nif_fild03,202,196,4	script	James Wolf#BS3	10295,{
 		mes "[John Wolf]";
 		mes "James, come home. Whatever this is, we'll face it together. Like we always have.";
 		next;
-		callfunc "BS_Portrait", 5;
+		callfunc "BS_Portrait", 6;
 		mes "[James Wolf]";
 		mes "I've fought it every night since the mountain. Every night I lose a little more. I'm so tired, John.";
 		next;
-		callfunc "BS_Portrait", 6;
+		callfunc "BS_Portrait", 7;
 		mes "[James Wolf]";
 		mes "The Black Sun doesn't want me to fight. It says I can stop. It says I can be strong... stronger than anything that ever hunted on that mountain.";
 		next;
@@ -996,7 +1168,7 @@ nif_fild03,202,196,4	script	James Wolf#BS3	10295,{
 		mes "[John Wolf]";
 		mes "^FF0000James, don't! Please!^000000";
 		next;
-		callfunc "BS_Portrait", 6;
+		callfunc "BS_Portrait", 7;
 		mes "[James Wolf]";
 		mes "^FF0000I'm sorry. I surrender.^000000";
 		next;

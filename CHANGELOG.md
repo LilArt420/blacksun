@@ -1,5 +1,19 @@
 # Changelog
 
+## 1.1.0
+- Bigger kill goals, each stage twice the last or more: Horde 1 150 of each kind (210 of each out), Horde 2 300 of each (420 out), the Climb 500 of each (700 out).
+- The Climb's beasts are scattered through every hall of 1@mjo2 instead of crowding a few corridors, and everyone lands at 320, 79.
+- Nightwing points the way: whenever there's someone to find (Nightwing after a horde, James on the crag, the summit, James in Niflheim, the chest), everyone gets a word from him with a link that opens the navigation.
+- The Alpha Werewolves face off with Nightwing before they attack, in a dialogue everyone on the crag clicks through: the Druid's blue werewolf portrait on the left (mirrored to face him) and Nightwing's wereraptor on the right. The alphas wait until the leader closes it, or 30 seconds.
+- The finale: 3 Werewolves come halfway between the Black Sun's calls, and the Black Sun's werewolf face flashes up every time it calls its 35 beasts.
+- Nightwing's orders match the stages again (150 of each kind for Horde 1, 300 of each for Horde 2, 500 of each on the Climb).
+- James comes back to himself only once the chest has been opened (by everyone on the field, or a minute after the leader), so nobody is sent home before taking their share.
+- Fixed: with a single fighter near James, the Black Sun's first call stopped the run's clock (`rand(1)` is an error, and rAthena's `?:` works out both of its sides), so its later calls never came, James never came back after the chest and the run couldn't end.
+- New portraits for James: himself, the wolf breaking through (on the crag) and the wolf winning (as he gives in, in Niflheim).
+- The Black Sun's werewolf portrait is as big as Nightwing's, in the corner: all of him is in view but the rear the corner cuts off.
+- Cleaner portraits: no pale rim or specks left over from the backgrounds they were cut from, and John's fur cuff is whole again (tools/clean_cutin.py).
+- The beasts' skills are in effect again next to eden-rework-2021: the app can't combine two mods' db/mob_skill_db.txt, so Black Sun now loads after it ("after" in mod.json) and its copy wins. eden-rework-2021's own monster skills are left out while both are on (README).
+
 ## 1.0.0
 - Black Sun is a full instance on Mt. Mjolnir (1@mjo1, the Crag, and 1@mjo2, the Climb), built on rAthena's instance system: every party (or solo player) gets its own copy, so any number of groups can run it at once.
 - John Wolf (Prontera 113, 190) opens it: he tells James's story every time before anything else, then starts the climb (the party leader; members follow through him and can come back after dying), and keeps both exchanges (500 Premium Black Coins for 150 Cash Points, 1 Premium Black Ticket for 10,000,000 Zeny).

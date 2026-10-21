@@ -26,15 +26,15 @@ Yes, *that* Nightwing 😏 In Prontera he kneels to a Nightmare Queen; on Mt. Mj
 
 ## ⚔️ The Night, Step by Step
 1. 🏔️ **The Crag**: Nightwing meets you at the trail head
-2. 🐺 **Horde 1, the Pack**: 450 beasts, 150 each of Moonfang Wolf, Black Sun Shade and Frostbite Hound. Cut down 100 of each
-3. 🌕 **The Alpha Werewolves**: the three who bit James surround you with their packs, howling *Join the pack!*... and Nightwing transforms 🦅
-4. 🌑 **Horde 2, the Black Sun rising**: the sky darkens and bleeds red. 900 beasts, 300 each of Werewolf, Feral Wereraptor and Black Sun Shade. Cut down 200 of each
+2. 🐺 **Horde 1, the Pack**: 630 beasts, 210 each of Moonfang Wolf, Black Sun Shade and Frostbite Hound. Cut down 150 of each
+3. 🌕 **The Alpha Werewolves**: the three who bit James surround you with their packs, howling *Join the pack!* 🐺 and Nightwing transforms 🦅
+4. 🌑 **Horde 2, the Black Sun rising**: the sky darkens and bleeds red. 1,260 beasts, 420 each of Werewolf, Feral Wereraptor and Black Sun Shade. Cut down 300 of each
 5. 🧍 **James**: you find him at last. He begs you to stay away... then howls, and the crag gives way under your feet 😱
-6. 🧗 **The Climb**: you land in the switchbacks below the summit. 1,500 beasts, 500 each of Werewolf, Frostbite Hound and Moonfang Wolf, stand frozen on the slopes, staring at the Black Sun, until they turn to stare at **you** 👀 350 of each open the summit
+6. 🧗 **The Climb**: you land at the foot of the mountain's last slopes. 2,100 beasts, 700 each of Werewolf, Frostbite Hound and Moonfang Wolf, stand frozen all through the mountain's narrow halls, staring at the Black Sun, until they turn to stare at **you** 👀 500 of each open the summit
 7. 🏔️ **The summit**: John followed you up... but James has walked into the dark under the Black Sun, and it has torn the mountain open all the way down to Niflheim
 8. 💀 **Niflheim**: the dark field where the Black Werewolf always stood. John begs his brother to come home. James is so tired of fighting... and surrenders to the Black Sun
 9. 🔴 **James, the Black Sun**: the strongest werewolf the world has ever known
-10. 🌅 **Dawn**: the Black Sun sets, and James comes back to himself. Nightwing flies everyone home to Prontera
+10. 🌅 **Dawn**: the Black Sun sets. Open the chest where James fell, and he comes back to himself 🐺➡️🧍 Nightwing flies everyone home to Prontera
 
 ## 👹 The Beasts
 | | HP | Looks like |
@@ -50,7 +50,9 @@ Yes, *that* Nightwing 😏 In Prontera he kneels to a Nightmare Queen; on Mt. Mj
 
 Every stage's beasts are all out the moment it starts, and every stage holds more than the last 📈 Every beast on the mountain is **big** 🐾 and takes only **10%** of the damage it's dealt 🛡️
 
-While anyone is near James, the Black Sun calls **35 beasts** to his side every 15 seconds 🌀 (never while 175+ monsters are already out)
+While anyone is near James, the Black Sun calls **35 beasts** to his side every 15 seconds 🌀 (his werewolf face flashes up when it does), and **3 Werewolves** in between 🐺🐺🐺 (never while 175+ monsters are already out)
+
+Lost? Whenever there's someone to find, Nightwing tells you where, with a link that opens the navigation 🧭
 
 ## 👥 Bring Your Party!
 - **Every party gets its own mountain** 🏔️ Any number of groups can climb at once, no waiting for someone else to finish
@@ -60,7 +62,7 @@ While anyone is near James, the Black Sun calls **35 beasts** to his side every 
 - **Everyone's** kills count ⚔️
 
 ## 🎁 The Black Sun's Spoils
-When James falls, a chest appears where he lay 📦 **Everyone** in the run opens it for their own share:
+When James falls, a chest appears where he lay 📦 **Everyone** in the run opens it for their own share (James only wakes once it's open):
 - ⭐ Base and job EXP: 10% of your level each
 - 🐺 1 Grey Wolf Cub in Mouth
 - 🔮 1 Wolf Orb (Above All) Lv 3
@@ -74,11 +76,16 @@ Left before opening it? John mails you your share 📬 One run every 8 hours per
 
 ## 🖼️ The Portraits
 - Nightwing is the same portrait as in Royal Nightmare 🦇 and John and James get their own, in the same style and size 🎨
-- James has three, one for each part of the story: himself, the wolf breaking through 🩸, and the Black Sun's werewolf 🐺
+- James has four, one for each part of the story: himself, the wolf breaking through 🩸, the wolf winning 🩸🩸, and the Black Sun's werewolf 🐺
 - Nightwing's wereraptor form is the client's own Druid art
 
 ## 🌌 The Sky
 The Black Sun rises as the night goes on: dusk on arrival, a black disc in a burning corona after the alphas, the full blood-red eclipse at the summit, and dawn once James is free 🌅 It travels across the sky faster at every stage ☄️ (a light graphics pass in `client/`, on the instance maps only)
+
+## ⚠️ Monster Skills and Other Mods
+The beasts' skills are in `db/mob_skill_db.txt`. The app can combine most tables from several mods, but not this one: when two enabled mods both ship `db/mob_skill_db.txt`, only one copy is in effect, and **Settings → Mods** says so under the other.
+- 🐺 Black Sun loads **after eden-rework-2021** (`"after"` in `mod.json`), so with both on, the Black Sun's beasts keep their skills and eden-rework-2021's Odin's Past monster skills are the ones left out.
+- With any other mod that ships the table, the one whose folder name sorts last wins. Black Sun still works without its skills; the beasts just hit without them.
 
 ## 💾 Installing
 Download `black-sun-v<version>.zip` from the [Releases](../../releases) page, and in Ragnarok Offline install it with **Settings → Mods → Install from a folder…** Renewal servers only, Ragnarok Offline 1.6.4 or newer.
