@@ -7,7 +7,7 @@
 - James comes back to himself only once the chest has been opened (by everyone on the field, or a minute after the leader), so nobody is sent home before taking their share.
 - The Black Sun's werewolf portrait is as big as Nightwing's, in the corner, with his whole face and claw in view.
 - Cleaner portraits: no pale rim or specks left over from the backgrounds they were cut from, and John's fur cuff is whole again (tools/clean_cutin.py).
-- README: the beasts' skills (db/mob_skill_db.txt) can't be combined with another mod's copy of that table.
+- The beasts' skills are in effect again next to eden-rework-2021: the app can't combine two mods' db/mob_skill_db.txt, so Black Sun now loads after it ("after" in mod.json) and its copy wins. eden-rework-2021's own monster skills are left out while both are on (README).
 
 ## 1.0.0
 - Black Sun is a full instance on Mt. Mjolnir (1@mjo1, the Crag, and 1@mjo2, the Climb), built on rAthena's instance system: every party (or solo player) gets its own copy, so any number of groups can run it at once.

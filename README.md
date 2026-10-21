@@ -83,7 +83,9 @@ Left before opening it? John mails you your share 📬 One run every 8 hours per
 The Black Sun rises as the night goes on: dusk on arrival, a black disc in a burning corona after the alphas, the full blood-red eclipse at the summit, and dawn once James is free 🌅 It travels across the sky faster at every stage ☄️ (a light graphics pass in `client/`, on the instance maps only)
 
 ## ⚠️ Monster Skills and Other Mods
-The beasts' skills are in `db/mob_skill_db.txt`. The app can combine most tables from several mods, but not this one: if another enabled mod also ships `db/mob_skill_db.txt` (eden-rework-2021 does), only the mod whose folder name sorts last is in effect, and **Settings → Mods** says so under the other one. Black Sun still works without its skills; the beasts just hit without them.
+The beasts' skills are in `db/mob_skill_db.txt`. The app can combine most tables from several mods, but not this one: when two enabled mods both ship `db/mob_skill_db.txt`, only one copy is in effect, and **Settings → Mods** says so under the other.
+- 🐺 Black Sun loads **after eden-rework-2021** (`"after"` in `mod.json`), so with both on, the Black Sun's beasts keep their skills and eden-rework-2021's Odin's Past monster skills are the ones left out.
+- With any other mod that ships the table, the one whose folder name sorts last wins. Black Sun still works without its skills; the beasts just hit without them.
 
 ## 💾 Installing
 Download `black-sun-v<version>.zip` from the [Releases](../../releases) page, and in Ragnarok Offline install it with **Settings → Mods → Install from a folder…** Renewal servers only, Ragnarok Offline 1.6.4 or newer.

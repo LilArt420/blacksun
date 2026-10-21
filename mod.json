@@ -7,6 +7,9 @@
     "app": ">=1.6.4",
     "era": "renewal"
   },
+  "after": [
+    "eden-rework-2021"
+  ],
   "maps": {
     "1@mjo1": {
       "sky": [
