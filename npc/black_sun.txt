@@ -686,7 +686,10 @@ OnTimer1000:
 				}
 			}
 			if (.@k) {
-				.@r = (.@k > 1 ? rand(.@k) : 0);	// rand(1) is an error, and would end this loop
+				// rand(1) is an error that ends this loop, and rAthena's ?: works out
+				// both sides, so this has to be an if
+				.@r = 0;
+				if (.@k > 1) .@r = rand(.@k);
 				.@px = .@nx[.@r];
 				.@py = .@ny[.@r];
 				if (.@wave == 35) {
