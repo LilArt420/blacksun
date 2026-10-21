@@ -27,7 +27,7 @@ Yes, *that* Nightwing 😏 In Prontera he kneels to a Nightmare Queen; on Mt. Mj
 ## ⚔️ The Night, Step by Step
 1. 🏔️ **The Crag**: Nightwing meets you at the trail head
 2. 🐺 **Horde 1, the Pack**: 450 beasts, 150 each of Moonfang Wolf, Black Sun Shade and Frostbite Hound. Cut down 100 of each
-3. 🌕 **The Alpha Werewolves**: the three who bit James surround you with their packs, howling *Join the pack!*... and Nightwing transforms 🦅
+3. 🌕 **The Alpha Werewolves**: the three who bit James surround you with their packs, howling *Join the pack!* 🐺 and Nightwing transforms 🦅
 4. 🌑 **Horde 2, the Black Sun rising**: the sky darkens and bleeds red. 900 beasts, 300 each of Werewolf, Feral Wereraptor and Black Sun Shade. Cut down 200 of each
 5. 🧍 **James**: you find him at last. He begs you to stay away... then howls, and the crag gives way under your feet 😱
 6. 🧗 **The Climb**: you land at the foot of the mountain's last slopes. 1,500 beasts, 500 each of Werewolf, Frostbite Hound and Moonfang Wolf, stand frozen all over the mountainside, staring at the Black Sun, until they turn to stare at **you** 👀 350 of each open the summit

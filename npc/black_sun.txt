@@ -301,7 +301,7 @@ OnPCLoadMapEvent:
 		mes "The pack that bit him still hunts this crag: Moonfang wolves, shades, frostbite hounds. They can smell the Black Sun coming, and it has driven them mad.";
 		next;
 		mes "[Nightwing]";
-		mes "Break the pack. Cut down ^FF0000150 of each kind^000000, and their alphas will have no choice but to come out and face us. Then we follow James's trail.";
+		mes "Break the pack. Cut down ^FF0000100 of each kind^000000, and their alphas will have no choice but to come out and face us. Then we follow James's trail.";
 		callfunc "BS_Portrait", 0;
 		close2;
 		hideonnpc instance_npcname("Nightwing#BS");
@@ -331,7 +331,7 @@ OnPCLoadMapEvent:
 		mes "^FF0000The Black Sun is rising.^000000 Every beast on this mountain is answering it: werewolves, and wereraptors. Poor wretches. That's what my gift looks like with no mind left behind it.";
 		next;
 		mes "[Nightwing]";
-		mes "Everything James could become is coming up that slope. Cut down ^FF000040 Werewolves, 50 Wereraptors and 80 Shades^000000, and I'll find him.";
+		mes "Everything James could become is coming up that slope. Cut down ^FF0000200 each of Werewolves, Wereraptors and Shades^000000, and I'll find him.";
 		callfunc "BS_Portrait", 0;
 		close2;
 		hideonnpc instance_npcname("Nightwing#BS");
@@ -451,11 +451,15 @@ OnAlphas:
 		}
 	}
 	instance_announce 0, "[Black Sun]: Three Alpha Werewolves and their packs close in from the dark!", bc_map, "0xFF0000";
+	// the blue werewolf (the Druid's own portrait) glares out at everyone on the
+	// crag while they howl
+	callsub L_MapCutin, "1@mjo1", "druid_varg.png", 0;
 	for (.@t = 0; .@t < 3; .@t++) {
 		for (.@i = 0; .@i < 3; .@i++)
 			if (unitexists(.@a[.@i])) unittalk .@a[.@i], (.@t == 2 ? "Give us the boy!" : "Join the pack!");
 		sleep 1000;
 	}
+	callsub L_MapCutin, "1@mjo1", "", 255;
 	callsub L_Wake;
 	instance_announce 0, "[Nightwing]: Now! Bring them down!", bc_map, "0x99CCFF";
 	end;
@@ -652,7 +656,7 @@ OnTimer1000:
 	// for everyone on the field), and halfway between, 3 Werewolves
 	if ('bs_cutOff && gettimetick(2) >= 'bs_cutOff) {
 		'bs_cutOff = 0;
-		callsub L_FieldCutin, 0;
+		callsub L_MapCutin, "nif_fild03", "", 255;
 	}
 	if ('bs_stage == 10 && 'bs_mvp) {
 		.@m$ = instance_mapname("nif_fild03");
@@ -685,7 +689,7 @@ OnTimer1000:
 					'bs_addTime = gettimetick(2) + 15;
 					'bs_wolfTime = gettimetick(2) + 7;
 					'bs_cutOff = gettimetick(2) + 3;
-					callsub L_FieldCutin, 1;
+					callsub L_MapCutin, "nif_fild03", "bs_james_wolf.bmp", 2;
 				} else {
 					callsub L_SpawnRing, .@m$, .@px, .@py, 4, 1022, 3, "";
 					'bs_wolfTime = 0;
@@ -877,13 +881,14 @@ L_SafeZone:
 	}
 	return;
 
-// The Black Sun's werewolf face for everyone on the field (1), or gone (0)
-L_FieldCutin:
-	.@n = getmapunits(BL_PC, instance_mapname("nif_fild03"), .@pc);
+// A cut-in for everyone in the run on one of its maps ("1@mjo1", "1@mjo2",
+// "nif_fild03"); "", 255 takes it down.
+//   callsub L_MapCutin, "<map>", "<file>", <position>;
+L_MapCutin:
+	.@n = getmapunits(BL_PC, instance_mapname(getarg(0)), .@pc);
 	for (.@i = 0; .@i < .@n; .@i++) {
 		if (!attachrid(.@pc[.@i])) continue;
-		if (getarg(0)) cutin "bs_james_wolf.bmp", 2;
-		else cutin "", 255;
+		cutin getarg(1), getarg(2);
 		detachrid;
 	}
 	return;
