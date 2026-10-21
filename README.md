@@ -76,7 +76,7 @@ Left before opening it? John mails you your share 📬 One run every 8 hours per
 
 ## 🖼️ The Portraits
 - Nightwing is the same portrait as in Royal Nightmare 🦇 and John and James get their own, in the same style and size 🎨
-- James has three, one for each part of the story: himself, the wolf breaking through 🩸, and the Black Sun's werewolf 🐺
+- James has four, one for each part of the story: himself, the wolf breaking through 🩸, the wolf winning 🩸🩸, and the Black Sun's werewolf 🐺
 - Nightwing's wereraptor form is the client's own Druid art
 
 ## 🌌 The Sky

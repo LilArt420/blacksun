@@ -8,7 +8,9 @@
 - The finale: 3 Werewolves come halfway between the Black Sun's calls, and the Black Sun's werewolf face flashes up every time it calls its 35 beasts.
 - Nightwing's orders match the stages again (150 of each kind for Horde 1, 300 of each for Horde 2, 500 of each on the Climb).
 - James comes back to himself only once the chest has been opened (by everyone on the field, or a minute after the leader), so nobody is sent home before taking their share.
-- The Black Sun's werewolf portrait is as big as Nightwing's, in the corner, with his whole face and claw in view.
+- Fixed: with a single fighter near James, the Black Sun's call stopped the run's clock (`rand(1)` is an error), so James never came back after the chest and the run couldn't end.
+- New portraits for James: himself, the wolf breaking through (on the crag) and the wolf winning (as he gives in, in Niflheim).
+- The Black Sun's werewolf portrait is as big as Nightwing's, in the corner: all of him is in view but the rear the corner cuts off.
 - Cleaner portraits: no pale rim or specks left over from the backgrounds they were cut from, and John's fur cuff is whole again (tools/clean_cutin.py).
 - The beasts' skills are in effect again next to eden-rework-2021: the app can't combine two mods' db/mob_skill_db.txt, so Black Sun now loads after it ("after" in mod.json) and its copy wins. eden-rework-2021's own monster skills are left out while both are on (README).
 

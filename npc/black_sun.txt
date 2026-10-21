@@ -70,7 +70,8 @@ function	script	BS_IsOwner	{
 
 // Portrait pop-ups (cutin). The mod's own (data/texture/ui/illust/):
 // 1 Nightwing (Royal Nightmare's), 4 John, and James: 5 himself, 6 the wolf
-// breaking through, 3 the Black Sun's werewolf; 8 the Alpha Werewolves (the
+// breaking through, 7 the wolf winning, 3 the Black Sun's werewolf; 8 the
+// Alpha Werewolves (the
 // client's Druid werewolf, mirrored to face Nightwing). The client's own Druid
 // art: 2 Nightwing as a wereraptor. 0 hides it.
 function	script	BS_Portrait	{
@@ -81,6 +82,7 @@ function	script	BS_Portrait	{
 	else if (.@id == 4) cutin "bs_john.bmp", 0;
 	else if (.@id == 5) cutin "bs_james.bmp", 2;		// James, himself
 	else if (.@id == 6) cutin "bs_james_feral.bmp", 2;	// James, the wolf breaking through
+	else if (.@id == 7) cutin "bs_james_feral2.bmp", 2;	// James, the wolf winning
 	else if (.@id == 8) cutin "bs_alpha_varg.png", 0;	// the Alpha Werewolves, facing Nightwing
 	else cutin "", 255;
 	return;
@@ -684,7 +686,7 @@ OnTimer1000:
 				}
 			}
 			if (.@k) {
-				.@r = rand(.@k);
+				.@r = (.@k > 1 ? rand(.@k) : 0);	// rand(1) is an error, and would end this loop
 				.@px = .@nx[.@r];
 				.@py = .@ny[.@r];
 				if (.@wave == 35) {
@@ -709,22 +711,9 @@ OnTimer1000:
 	}
 
 	// James comes back to himself once everyone on the field has taken their
-	// share from the chest (or a minute after the leader took theirs)
-	if ('bs_stage == 11 && !'bs_jamesBack) {
-		.@n = getmapunits(BL_PC, instance_mapname("nif_fild03"), .@pc);
-		.@all = (.@n > 0);
-		for (.@i = 0; .@i < .@n; .@i++) {
-			if (!attachrid(.@pc[.@i])) continue;
-			if (BS_Rewarded != 'bs_run) .@all = 0;
-			detachrid;
-		}
-		if (.@all || ('bs_leaderTook && gettimetick(2) >= 'bs_leaderTook + 60)) {
-			'bs_jamesBack = 1;
-			hideoffnpc instance_npcname("James Wolf#BS3");
-			specialeffect EF_BEGINSPELL7, AREA, instance_npcname("James Wolf#BS3");
-			instance_announce 0, "[Nightwing]: Look... James is himself again!", bc_map, "0x99CCFF";
-		}
-	}
+	// share from the chest (or a minute after the leader took theirs); the
+	// chest asks too, the moment someone opens it
+	if ('bs_stage == 11 && !'bs_jamesBack) callsub L_JamesBack;
 
 	// Nightwing points the way whenever there's someone to find
 	if ('bs_pointSent != 'bs_stage * 10 + 'bs_jamesBack) {
@@ -887,6 +876,28 @@ L_SafeZone:
 		}
 		if (.@try < 20) unitwarp .@mob[.@i], .@m$, .@x, .@y;
 	}
+	return;
+
+// The chest was opened: is everyone on the field done with it?
+OnChestTaken:
+	if ('bs_stage == 11 && !'bs_jamesBack) callsub L_JamesBack;
+	end;
+
+// James wakes once everyone on the field has their share (or a minute after
+// the leader took theirs)
+L_JamesBack:
+	.@n = getmapunits(BL_PC, instance_mapname("nif_fild03"), .@pc);
+	.@all = (.@n > 0);
+	for (.@i = 0; .@i < .@n; .@i++) {
+		if (!attachrid(.@pc[.@i])) continue;
+		if (BS_Rewarded != 'bs_run) .@all = 0;
+		detachrid;
+	}
+	if (!.@all && !('bs_leaderTook && gettimetick(2) >= 'bs_leaderTook + 60)) return;
+	'bs_jamesBack = 1;
+	hideoffnpc instance_npcname("James Wolf#BS3");
+	specialeffect EF_BEGINSPELL7, AREA, instance_npcname("James Wolf#BS3");
+	instance_announce 0, "[Nightwing]: Look... James is himself again!", bc_map, "0x99CCFF";
 	return;
 
 // A cut-in for everyone in the run on one of its maps ("1@mjo1", "1@mjo2",
@@ -1116,6 +1127,7 @@ nif_fild03,205,194,4	script	Spoils of the Black Sun#BS3	10405,{
 	if (getcharid(0) == 'bs_owner && !'bs_leaderTook) 'bs_leaderTook = gettimetick(2);
 	callfunc "BS_GiveRewards", 0;
 	specialeffect2 EF_GLORIA;
+	donpcevent instance_npcname("BS_Engine") + "::OnChestTaken";
 	end;
 OnInit:
 	hideonnpc "Spoils of the Black Sun#BS3";
@@ -1129,11 +1141,11 @@ nif_fild03,202,196,4	script	James Wolf#BS3	10295,{
 	if (!callfunc("BS_IsOwner", "James Wolf", instance_id())) end;
 
 	if ('bs_stage == 9) {
-		callfunc "BS_Portrait", 5;
+		callfunc "BS_Portrait", 6;
 		mes "[James Wolf]";
 		mes "John... you came. You always come.";
 		next;
-		callfunc "BS_Portrait", 5;
+		callfunc "BS_Portrait", 6;
 		mes "[James Wolf]";
 		mes "Look up, brother. Even down here you can see it. The sun, with a hole burned right through its heart.";
 		next;
@@ -1141,11 +1153,11 @@ nif_fild03,202,196,4	script	James Wolf#BS3	10295,{
 		mes "[John Wolf]";
 		mes "James, come home. Whatever this is, we'll face it together. Like we always have.";
 		next;
-		callfunc "BS_Portrait", 5;
+		callfunc "BS_Portrait", 6;
 		mes "[James Wolf]";
 		mes "I've fought it every night since the mountain. Every night I lose a little more. I'm so tired, John.";
 		next;
-		callfunc "BS_Portrait", 6;
+		callfunc "BS_Portrait", 7;
 		mes "[James Wolf]";
 		mes "The Black Sun doesn't want me to fight. It says I can stop. It says I can be strong... stronger than anything that ever hunted on that mountain.";
 		next;
@@ -1153,7 +1165,7 @@ nif_fild03,202,196,4	script	James Wolf#BS3	10295,{
 		mes "[John Wolf]";
 		mes "^FF0000James, don't! Please!^000000";
 		next;
-		callfunc "BS_Portrait", 6;
+		callfunc "BS_Portrait", 7;
 		mes "[James Wolf]";
 		mes "^FF0000I'm sorry. I surrender.^000000";
 		next;
