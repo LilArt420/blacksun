@@ -1,5 +1,14 @@
 # Changelog
 
+## 1.1.0
+- The Climb's 1,500 beasts are scattered over the whole of 1@mjo2 instead of crowding a few corridors (the same numbers), and everyone lands at 320, 79.
+- Nightwing points the way: whenever there's someone to find (Nightwing after a horde, James on the crag, the summit, James in Niflheim, the chest), everyone gets a word from him with a link that opens the navigation.
+- The finale: 3 Werewolves come halfway between the Black Sun's calls, and the Black Sun's werewolf face flashes up every time it calls its 35 beasts.
+- James comes back to himself only once the chest has been opened (by everyone on the field, or a minute after the leader), so nobody is sent home before taking their share.
+- The Black Sun's werewolf portrait is as big as Nightwing's, in the corner, with his whole face and claw in view.
+- Cleaner portraits: no pale rim or specks left over from the backgrounds they were cut from, and John's fur cuff is whole again (tools/clean_cutin.py).
+- README: the beasts' skills (db/mob_skill_db.txt) can't be combined with another mod's copy of that table.
+
 ## 1.0.0
 - Black Sun is a full instance on Mt. Mjolnir (1@mjo1, the Crag, and 1@mjo2, the Climb), built on rAthena's instance system: every party (or solo player) gets its own copy, so any number of groups can run it at once.
 - John Wolf (Prontera 113, 190) opens it: he tells James's story every time before anything else, then starts the climb (the party leader; members follow through him and can come back after dying), and keeps both exchanges (500 Premium Black Coins for 150 Cash Points, 1 Premium Black Ticket for 10,000,000 Zeny).
