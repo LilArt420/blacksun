@@ -14,16 +14,16 @@
 // Every stage spawns all of its beasts at once when it starts, and each holds
 // more than the one before. Every beast takes 10% of the damage it's dealt.
 // - 1@mjo1, the Crag:
-//     Horde 1, the Pack: 150 each of Moonfang Wolf, Black Sun Shade and
-//       Frostbite Hound; 100 of each to kill
+//     Horde 1, the Pack: 210 each of Moonfang Wolf, Black Sun Shade and
+//       Frostbite Hound; 150 of each to kill
 //     the three Alpha Werewolves and their packs (Nightwing turns into a
 //       wereraptor)
-//     Horde 2, the Black Sun rising: 300 each of Werewolf, Feral Wereraptor
-//       and Black Sun Shade; 200 of each to kill
+//     Horde 2, the Black Sun rising: 420 each of Werewolf, Feral Wereraptor
+//       and Black Sun Shade; 300 of each to kill
 //     James, who throws everyone down the far side of the ridge
-// - 1@mjo2, the Climb: 500 each of Werewolf, Frostbite Hound and Moonfang
+// - 1@mjo2, the Climb: 700 each of Werewolf, Frostbite Hound and Moonfang
 //   Wolf scattered over the whole mountainside, frozen and staring until the
-//   climbers have landed (320, 79); 350 of each open the summit
+//   climbers have landed (320, 79); 500 of each open the summit
 // - Niflheim: James surrenders to the Black Sun and becomes the MVP,
 //   James, the Black Sun (2,000,000,000 HP, takes 1% damage). While anyone is
 //   near him, the Black Sun calls 35 beasts every 15 seconds (his werewolf face
@@ -301,7 +301,7 @@ OnPCLoadMapEvent:
 		mes "The pack that bit him still hunts this crag: Moonfang wolves, shades, frostbite hounds. They can smell the Black Sun coming, and it has driven them mad.";
 		next;
 		mes "[Nightwing]";
-		mes "Break the pack. Cut down ^FF0000100 of each kind^000000, and their alphas will have no choice but to come out and face us. Then we follow James's trail.";
+		mes "Break the pack. Cut down ^FF0000150 of each kind^000000, and their alphas will have no choice but to come out and face us. Then we follow James's trail.";
 		callfunc "BS_Portrait", 0;
 		close2;
 		hideonnpc instance_npcname("Nightwing#BS");
@@ -331,7 +331,7 @@ OnPCLoadMapEvent:
 		mes "^FF0000The Black Sun is rising.^000000 Every beast on this mountain is answering it: werewolves, and wereraptors. Poor wretches. That's what my gift looks like with no mind left behind it.";
 		next;
 		mes "[Nightwing]";
-		mes "Everything James could become is coming up that slope. Cut down ^FF0000200 each of Werewolves, Wereraptors and Shades^000000, and I'll find him.";
+		mes "Everything James could become is coming up that slope. Cut down ^FF0000300 each of Werewolves, Wereraptors and Shades^000000, and I'll find him.";
 		callfunc "BS_Portrait", 0;
 		close2;
 		hideonnpc instance_npcname("Nightwing#BS");
@@ -416,7 +416,7 @@ OnHorde1:
 	'bs_stage = 1;
 	'bs_cfg = 1;
 	callsub L_StartHorde, 1;
-	instance_announce 0, "[Nightwing]: The Pack is everywhere! 450 beasts! Cut down 100 each of Moonfang Wolf, Black Sun Shade and Frostbite Hound!", bc_map, "0x99CCFF";
+	instance_announce 0, "[Nightwing]: The Pack is everywhere! 630 beasts! Cut down 150 each of Moonfang Wolf, Black Sun Shade and Frostbite Hound!", bc_map, "0x99CCFF";
 	end;
 
 // --- the Alpha Werewolves: around the leader, frozen, howling, then free ---
@@ -486,7 +486,7 @@ OnHorde2:
 	'bs_stage = 5;
 	'bs_cfg = 2;
 	callsub L_StartHorde, 2;
-	instance_announce 0, "[Nightwing]: Werewolves and wereraptors, 900 of them! Cut down 200 each of Werewolf, Feral Wereraptor and Black Sun Shade!", bc_map, "0x99CCFF";
+	instance_announce 0, "[Nightwing]: Werewolves and wereraptors, 1,260 of them! Cut down 300 each of Werewolf, Feral Wereraptor and Black Sun Shade!", bc_map, "0x99CCFF";
 	end;
 
 // Kills of slot 0 / 1 / 2 of the current stage (Horde 1, Horde 2, the Climb)
@@ -536,12 +536,12 @@ OnClimb:
 	hideonnpc instance_npcname("Nightwing#BS");
 	instance_warpall instance_mapname("1@mjo2"), 320, 79, instance_id();
 	.@m$ = instance_mapname("1@mjo2");
-	// 500 of each kind (and 8 Skolls, who don't count) scattered over the whole
+	// 700 of each kind (and 8 Skolls, who don't count) scattered over the whole
 	// mountainside, frozen, at least 20 cells from where everyone lands and
 	// turned to stare at it
 	'bs_wake = gettimetick(2) + 30;
 	'bs_gaunN = 0;
-	freeloop 1;	// 1,500 beasts to place and freeze in one go
+	freeloop 1;	// 2,100 beasts to place and freeze in one go
 	for (.@t = 0; .@t < 4; .@t++) {
 		.@id = (.@t < 3 ? .id[.@t] : 26706);
 		.@n = (.@t < 3 ? .spawn[.@t] : 8);
@@ -562,7 +562,7 @@ OnClimbWake:
 	callsub L_Wake;
 	end;
 
-// 350 of each kind are down: the summit opens
+// 500 of each kind are down: the summit opens
 L_ClimbDone:
 	'bs_stage = 8;
 	killmonster instance_mapname("1@mjo2"), "All";
@@ -781,20 +781,20 @@ L_Cfg:
 		setarray .id[0], 26702, 26703, 26704;
 		setarray .nm$[0], "Moonfang Wolf", "Black Sun Shade", "Frostbite Hound";
 		setarray .ab$[0], "MW", "BS", "FH";
-		setarray .goal[0], 100, 100, 100;
-		setarray .spawn[0], 150, 150, 150;
+		setarray .goal[0], 150, 150, 150;
+		setarray .spawn[0], 210, 210, 210;
 	} else if (getarg(0) == 2) {
 		setarray .id[0], 1022, 26705, 26703;
 		setarray .nm$[0], "Werewolf", "Feral Wereraptor", "Black Sun Shade";
 		setarray .ab$[0], "WW", "WR", "BS";
-		setarray .goal[0], 200, 200, 200;
-		setarray .spawn[0], 300, 300, 300;
+		setarray .goal[0], 300, 300, 300;
+		setarray .spawn[0], 420, 420, 420;
 	} else {
 		setarray .id[0], 1022, 26704, 26702;
 		setarray .nm$[0], "Werewolf", "Frostbite Hound", "Moonfang Wolf";
 		setarray .ab$[0], "WW", "FH", "MW";
-		setarray .goal[0], 350, 350, 350;
-		setarray .spawn[0], 500, 500, 500;
+		setarray .goal[0], 500, 500, 500;
+		setarray .spawn[0], 700, 700, 700;
 	}
 	return;
 
@@ -988,7 +988,7 @@ OnIntro:
 	next;
 	callfunc "BS_Portrait", 2;
 	mes "[Nightwing]";
-	mes "^FF0000Climb! Cut your way up to the " + callfunc("BS_Navi", "summit", "1@mjo2", 184, 349) + "! 350 of each kind, and it's ours!^000000";
+	mes "^FF0000Climb! Cut your way up to the " + callfunc("BS_Navi", "summit", "1@mjo2", 184, 349) + "! 500 of each kind, and it's ours!^000000";
 	callfunc "BS_Portrait", 0;
 	close2;
 	donpcevent instance_npcname("BS_Engine") + "::OnClimbWake";
