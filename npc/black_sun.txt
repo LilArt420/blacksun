@@ -70,8 +70,9 @@ function	script	BS_IsOwner	{
 
 // Portrait pop-ups (cutin). The mod's own (data/texture/ui/illust/):
 // 1 Nightwing (Royal Nightmare's), 4 John, and James: 5 himself, 6 the wolf
-// breaking through, 3 the Black Sun's werewolf. The client's own Druid art:
-// 2 Nightwing as a wereraptor. 0 hides it.
+// breaking through, 3 the Black Sun's werewolf; 8 the Alpha Werewolves (the
+// client's Druid werewolf, mirrored to face Nightwing). The client's own Druid
+// art: 2 Nightwing as a wereraptor. 0 hides it.
 function	script	BS_Portrait	{
 	.@id = getarg(0);
 	if (.@id == 1)      cutin "bs_nightwing.bmp", 2;
@@ -80,6 +81,7 @@ function	script	BS_Portrait	{
 	else if (.@id == 4) cutin "bs_john.bmp", 0;
 	else if (.@id == 5) cutin "bs_james.bmp", 2;		// James, himself
 	else if (.@id == 6) cutin "bs_james_feral.bmp", 2;	// James, the wolf breaking through
+	else if (.@id == 8) cutin "bs_alpha_varg.png", 0;	// the Alpha Werewolves, facing Nightwing
 	else cutin "", 255;
 	return;
 }
@@ -450,22 +452,22 @@ OnAlphas:
 		}
 	}
 	instance_announce 0, "[Black Sun]: Three Alpha Werewolves and their packs close in from the dark!", bc_map, "0xFF0000";
-	// the alphas and Nightwing face off, for everyone on the crag: the blue
-	// werewolf (the Druid's own portrait) on the left, Nightwing's wereraptor
-	// on the right, one line each in turn (the client shows one cut-in at a time)
-	setarray .@line$[0], "Join the pack!", "Stay behind me, cousin's friend!", "Give us the boy!", "You'll have to go through me!";
-	for (.@t = 0; .@t < 4; .@t++) {
-		if (.@t % 2 == 0) {
-			callsub L_MapCutin, "1@mjo1", "druid_varg.png", 0;
-			for (.@i = 0; .@i < 3; .@i++)
-				if (unitexists(.@a[.@i])) unittalk .@a[.@i], .@line$[.@t];
-		} else {
-			callsub L_MapCutin, "1@mjo1", "druid_vedr.png", 2;
-			npctalk .@line$[.@t], .@nw$;
-		}
-		sleep 1500;
+	for (.@i = 0; .@i < 3; .@i++)
+		if (unitexists(.@a[.@i])) unittalk .@a[.@i], "Join the pack!";
+	// the alphas and Nightwing face off in a dialogue for everyone on the crag
+	// (BS_Point#1::OnAlphaTalk); they stay frozen until the leader closes it, or
+	// 30 seconds pass
+	.@n = getmapunits(BL_PC, .@m$, .@pc);
+	for (.@i = 0; .@i < .@n; .@i++) {
+		if (!attachrid(.@pc[.@i])) continue;
+		addtimer 500, instance_npcname("BS_Point#1") + "::OnAlphaTalk";
+		detachrid;
 	}
-	callsub L_MapCutin, "1@mjo1", "", 255;
+	end;
+
+// The leader closed the face-off: the alphas and their packs attack
+OnAlphaWake:
+	if ('bs_stage != 3 || !'bs_wake) end;
 	callsub L_Wake;
 	instance_announce 0, "[Nightwing]: Now! Bring them down!", bc_map, "0x99CCFF";
 	end;
@@ -931,6 +933,29 @@ L_Sky:
 // Where to go next: Nightwing's word, with a navigation link. L_Point sends it
 // with addtimer to everyone in the run, from the copy on their own map.
 1@mjo1,1,1,0	script	BS_Point#1	-1,{
+	end;
+// The Alpha Werewolves face Nightwing (OnAlphas sends it to everyone on the crag)
+OnAlphaTalk:
+	if ('bs_stage != 3 || !'bs_wake) end;
+	callfunc "BS_Portrait", 8;
+	mes "[Alpha Werewolf]";
+	mes "The boy's blood answers the Black Sun. He belongs to us now.";
+	mes "^FF0000Join the pack!^000000";
+	next;
+	callfunc "BS_Portrait", 2;
+	mes "[Nightwing]";
+	mes "Stay behind me, cousin's friend!";
+	next;
+	callfunc "BS_Portrait", 8;
+	mes "[Alpha Werewolf]";
+	mes "^FF0000Give us the boy!^000000";
+	next;
+	callfunc "BS_Portrait", 2;
+	mes "[Nightwing]";
+	mes "You'll have to go through me!";
+	close2;
+	callfunc "BS_Portrait", 0;
+	if (getcharid(0) == 'bs_owner) donpcevent instance_npcname("BS_Engine") + "::OnAlphaWake";
 	end;
 OnPoint:
 	.@stage = 'bs_stage;
