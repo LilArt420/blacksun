@@ -3,7 +3,7 @@
 ## 1.1.0
 - The Climb's 1,500 beasts are scattered over the whole of 1@mjo2 instead of crowding a few corridors (the same numbers), and everyone lands at 320, 79.
 - Nightwing points the way: whenever there's someone to find (Nightwing after a horde, James on the crag, the summit, James in Niflheim, the chest), everyone gets a word from him with a link that opens the navigation.
-- The Alpha Werewolves: the Druid's blue werewolf portrait glares out at everyone on the crag while they surround you and howl.
+- The Alpha Werewolves face off with Nightwing before they attack: the Druid's blue werewolf portrait on the left and Nightwing's wereraptor on the right, one line each in turn, for everyone on the crag.
 - The finale: 3 Werewolves come halfway between the Black Sun's calls, and the Black Sun's werewolf face flashes up every time it calls its 35 beasts.
 - Nightwing's orders match the stages again (100 of each kind for Horde 1, 200 of each for Horde 2).
 - James comes back to himself only once the chest has been opened (by everyone on the field, or a minute after the leader), so nobody is sent home before taking their share.

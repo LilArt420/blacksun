@@ -436,7 +436,6 @@ OnAlphas:
 	hideonnpc .@nw$;
 	hideoffnpc .@nw$;
 	specialeffect EF_BEGINSPELL7, AREA, .@nw$;
-	npctalk "Stay behind me, cousin's friend!", .@nw$;
 	setarray .@dx[0], 5, -5, 0;
 	setarray .@dy[0], 3, 3, -5;
 	for (.@i = 0; .@i < 3; .@i++) {
@@ -451,13 +450,20 @@ OnAlphas:
 		}
 	}
 	instance_announce 0, "[Black Sun]: Three Alpha Werewolves and their packs close in from the dark!", bc_map, "0xFF0000";
-	// the blue werewolf (the Druid's own portrait) glares out at everyone on the
-	// crag while they howl
-	callsub L_MapCutin, "1@mjo1", "druid_varg.png", 0;
-	for (.@t = 0; .@t < 3; .@t++) {
-		for (.@i = 0; .@i < 3; .@i++)
-			if (unitexists(.@a[.@i])) unittalk .@a[.@i], (.@t == 2 ? "Give us the boy!" : "Join the pack!");
-		sleep 1000;
+	// the alphas and Nightwing face off, for everyone on the crag: the blue
+	// werewolf (the Druid's own portrait) on the left, Nightwing's wereraptor
+	// on the right, one line each in turn (the client shows one cut-in at a time)
+	setarray .@line$[0], "Join the pack!", "Stay behind me, cousin's friend!", "Give us the boy!", "You'll have to go through me!";
+	for (.@t = 0; .@t < 4; .@t++) {
+		if (.@t % 2 == 0) {
+			callsub L_MapCutin, "1@mjo1", "druid_varg.png", 0;
+			for (.@i = 0; .@i < 3; .@i++)
+				if (unitexists(.@a[.@i])) unittalk .@a[.@i], .@line$[.@t];
+		} else {
+			callsub L_MapCutin, "1@mjo1", "druid_vedr.png", 2;
+			npctalk .@line$[.@t], .@nw$;
+		}
+		sleep 1500;
 	}
 	callsub L_MapCutin, "1@mjo1", "", 255;
 	callsub L_Wake;
