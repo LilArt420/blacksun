@@ -54,6 +54,13 @@ While anyone is near James, the Black Sun calls **35 beasts** to his side every 
 
 Lost? Whenever there's someone to find, Nightwing tells you where, with a link that opens the navigation 🧭
 
+## 🌟 The Hunt
+- 👑 **Moon-Crowned beasts**: 2 of each kind lead Horde 1, Horde 2 and the Climb. They glow gold, have 4x the HP and **count for 10 kills** each. Every one that falls brings Nightwing's blessing on the whole party (Blessing and Increase AGI Lv 10)
+- 👁️ **The Black Sun's Gaze**: every 25 seconds during the hordes, the Climb and the finale, the ground under every fighter is marked. **Step out!** 3 seconds later it erupts, taking 30% of the HP of anyone still within 2 cells (it can't kill)
+- 🏹 **The Stranded Hunters**: the old hunters of Mjolnir came up the mountain after the Black Sun, and 5 of them are stranded among the beasts: two in each horde, one on the Climb. Nightwing sends everyone a link to each one. Reach them within 3 minutes and lead them out: each one blesses the party and adds 100 Premium Black Coins to everyone's spoils, and saving all five adds a Premium Black Ticket
+- 🔔 **The Hunter's Bells**: at 66% and 33% of his HP the eclipse swallows James and nothing can touch him. Four bells stand around the field: click one and **stand still for 2 seconds** to ring it (moving breaks it off). Only **two of them are true**, and which two changes every time: ring both and the eclipse lets go. The other two are cursed, and ringing one turns it into a **blue werewolf** 🐺💙
+- 🏆 **Every night gets a grade**: S (no falls, under 45 minutes), A (2 falls at most, under 60 minutes), B (under 75 minutes) or C. The chest shows the night's time, falls, hunters and grade, and the grade adds to the spoils. John keeps the **Hall of Hunters**: the fastest night on the mountain, and your own best
+
 ## 👥 Bring Your Party!
 - **Every party gets its own mountain** 🏔️ Any number of groups can climb at once, no waiting for someone else to finish
 - The party leader starts the climb at John, and everyone else just talks to John to follow 🧗
@@ -67,8 +74,8 @@ When James falls, a chest appears where he lay 📦 **Everyone** in the run open
 - 🐺 1 Grey Wolf Cub in Mouth
 - 🔮 1 Wolf Orb (Above All) Lv 3
 - 📜 5 King Wolf Scrolls
-- 🪙 500 Premium Black Coins
-- 🎫 1 Premium Black Ticket
+- 🪙 500 Premium Black Coins, plus 100 for every Stranded Hunter saved and the grade's bonus (S 250, A 150, B 50)
+- 🎫 1 Premium Black Ticket, plus 1 for saving all five hunters and 1 for an S grade
 
 Trade the coins and the ticket with John Wolf: 500 Coins for 150 Cash Points 💎, and 1 Ticket for 10,000,000 Zeny 💰
 

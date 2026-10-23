@@ -1,5 +1,14 @@
 # Changelog
 
+## 1.2.0
+- Moon-Crowned beasts: 2 of each kind lead Horde 1, Horde 2 and the Climb (frozen with the rest there). They wear a gold aura, have 4x the HP and count for 10 kills each, and every one that falls brings Nightwing's blessing on the party (Blessing and Increase AGI Lv 10, 2 minutes).
+- The Black Sun's Gaze: every 25 seconds during the hordes, the Climb (once it wakes) and the finale, the ground under every fighter is marked, and 3 seconds later it erupts: 30% of their HP for anyone still within 2 cells. It can't kill.
+- The Stranded Hunters: 5 of Mjolnir's old hunters to rescue (Horde 1 at 30% and 70%, Horde 2 at 30% and 70%, the Climb at 50%). Nightwing sends a link to each one; anyone in the run can lead them out within 3 minutes. Each one blesses the party and adds 100 Premium Black Coins to the spoils; all five add a Premium Black Ticket.
+- The Hunter's Bells: at 66% and 33% of his HP the eclipse makes James immune. Four bells stand around the field (click one and stand still for 2 seconds to ring it): two are true, picked anew every time, and ringing both breaks the shield; the other two are cursed and turn into a blue werewolf (the Alpha Werewolf).
+- Every night gets a grade from its time and falls (S: none and under 45 minutes, A: 2 at most and under 60, B: under 75, C: the rest), shown on the chest. S adds 250 coins and a ticket, A 150 coins, B 50.
+- John Wolf's Hall of Hunters: the fastest night on the mountain (announced to everyone when it's beaten), and each character's own best.
+- The HUD counts the hunters saved, and the true bells while James is shielded.
+
 ## 1.1.0
 - Bigger kill goals, each stage twice the last or more: Horde 1 150 of each kind (210 of each out), Horde 2 300 of each (420 out), the Climb 500 of each (700 out).
 - The Climb's beasts are scattered through every hall of 1@mjo2 instead of crowding a few corridors, and everyone lands at 320, 79.
