@@ -38,9 +38,10 @@
 //   3s later: step out), the Stranded Hunters (the old hunters of Mjolnir, 5
 //   to rescue across the hordes and the Climb with Nightwing's links; each one
 //   blesses the party and adds to the spoils), the Hunter's Bells (at 66% and
-//   33% the eclipse shields James until the 4 bells around the field are
-//   rung, 2 seconds standing still each), and a grade for every night (time
-//   and falls: S, A, B, C), with the fastest one on John's Hall of Hunters.
+//   33% the eclipse shields James until the 2 true bells of the 4 around the
+//   field are rung, 2 seconds standing still each; the other 2 are cursed and
+//   turn into blue werewolves), and a grade for every night (time and falls:
+//   S, A, B, C), with the fastest one on John's Hall of Hunters.
 // - His reward is the Black Sun's, in a chest where he falls: base and job
 //   EXP (10% of a level each), a Grey Wolf Cub in Mouth, a Wolf Orb (Above
 //   All) Lv 3, 5 King Wolf Scrolls, 500 Premium Black Coins and a Premium
@@ -909,7 +910,7 @@ OnTimer1000:
 	case 11: .@info$ = ('bs_jamesBack ? "Talk to James" : "Open the chest where James fell"); break;
 	default: .@info$ = "Talk to James";
 	}
-	if ('bs_stage == 10 && 'bs_shield) .@info$ = "Ring the Hunter's Bells " + 'bs_bells + "/4";
+	if ('bs_stage == 10 && 'bs_shield) .@info$ = "Ring the true Hunter's Bells " + 'bs_bells + "/2";
 	if ('bs_stage >= 1) .@info$ += " | Hunters " + 'bs_hunters + "/5";
 	setarray .@maps$[0], "1@mjo1", "1@mjo2", "nif_fild03";
 	for (.@mp = 0; .@mp < 3; .@mp++) {
@@ -1041,23 +1042,28 @@ L_HunterAppear:
 	instance_announce 0, "[Nightwing]: One of the old hunters is stranded out there! Find " + callfunc("BS_HunterName", .@h) + " before the beasts do!", bc_map, "0xFFCC00";
 	return;
 
-// The eclipse swallows James: he's immune until the 4 Hunter's Bells ring
+// The eclipse swallows James: he's immune until the 2 true Hunter's Bells
+// ring. Which 2 of the 4 are true changes every time; the other 2 are cursed.
 L_Shield:
 	'bs_shieldPhase++;
 	'bs_shield = 1;
 	'bs_bells = 0;
 	'bs_bellMask = 0;
+	.@a = rand(4);
+	.@b = rand(3);
+	if (.@b >= .@a) .@b++;
+	'bs_bellTrue = (1 << .@a) | (1 << .@b);
 	setunitdata 'bs_mvp, UMOB_DMGIMMUNE, 1;
 	for (.@b = 0; .@b < 4; .@b++) hideoffnpc instance_npcname("Hunter's Bell#BSB" + .@b);
 	instance_announce 0, "[Black Sun]: The eclipse swallows James whole! Nothing can touch him now!", bc_map, "0xFF0000";
-	instance_announce 0, "[John Wolf]: The hunters' bells! James always came home when they rang! Ring all four!", bc_map, "0x99CCFF";
+	instance_announce 0, "[John Wolf]: The hunters' bells! James always came home when they rang! But the Black Sun has cursed two of them... find the two true ones!", bc_map, "0x99CCFF";
 	return;
 
-// A bell rang (Hunter's Bell#BSB<n>): the 4th breaks the eclipse's hold
+// A true bell rang (Hunter's Bell#BSB<n>): the 2nd breaks the eclipse's hold
 OnBellRung:
 	if ('bs_stage != 10 || !'bs_shield) end;
-	if ('bs_bells < 4) {
-		instance_announce 0, "[John Wolf]: A bell rings out over the field! " + 'bs_bells + "/4!", bc_map, "0x99CCFF";
+	if ('bs_bells < 2) {
+		instance_announce 0, "[John Wolf]: A true bell rings out over the field! " + 'bs_bells + "/2!", bc_map, "0x99CCFF";
 		end;
 	}
 	'bs_shield = 0;
@@ -1505,16 +1511,27 @@ OnInstanceInit:
 
 // The Hunter's Bells around the field: when the eclipse shields James (66%
 // and 33% of his HP), clicking one and standing still beside it for 2 seconds
-// rings it; the 4th breaks the shield (BS_Engine::OnBellRung).
+// rings it. 2 of the 4 are true ('bs_bellTrue, new every time): the 2nd true
+// one breaks the shield (BS_Engine::OnBellRung). The other 2 are cursed and
+// turn into a blue werewolf (the Alpha Werewolf, the Druid's blue form).
 nif_fild03,193,196,4	script	Hunter's Bell#BSB0	2917,{
 	.@b = atoi(charat(strnpcinfo(2), 3));	// BSB<n>
 	if ('bs_stage != 10 || !'bs_shield || ('bs_bellMask & (1 << .@b))) end;
 	progressbar "ffffff", 2;	// stand still: moving breaks it off
 	if ('bs_stage != 10 || !'bs_shield || ('bs_bellMask & (1 << .@b))) end;
 	'bs_bellMask = 'bs_bellMask | (1 << .@b);
-	'bs_bells++;
-	specialeffect EF_GLORIA, AREA, strnpcinfo(3);
-	donpcevent instance_npcname("BS_Engine") + "::OnBellRung";
+	if ('bs_bellTrue & (1 << .@b)) {
+		'bs_bells++;
+		specialeffect EF_GLORIA, AREA, strnpcinfo(3);
+		donpcevent instance_npcname("BS_Engine") + "::OnBellRung";
+		end;
+	}
+	// a cursed bell: it cracks, and a blue werewolf stands where it was
+	getmapxy(.@m$, .@x, .@y, BL_NPC);
+	specialeffect EF_SUI_EXPLOSION, AREA, strnpcinfo(3);
+	hideonnpc strnpcinfo(3);
+	monster .@m$, .@x, .@y, "--ja--", 26701, 1, "", Size_Large;
+	instance_announce 0, "[Black Sun]: A cursed bell! It cracks open, and a blue werewolf howls out of it!", bc_map, "0xFF0000";
 	end;
 OnInit:
 	hideonnpc strnpcinfo(3);
