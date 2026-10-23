@@ -31,6 +31,16 @@
 //   spoils appears, and James comes back to himself once it has been opened.
 // - Whenever there's someone to find, Nightwing says where, with a navigation
 //   link (BS_Point).
+// - 1.2.0, the hunt: Moon-Crowned beasts (2 of each kind in Horde 1, Horde 2
+//   and the Climb, gold-crowned, 4x the HP; each counts for 10 and Nightwing
+//   blesses the party), the Black Sun's Gaze (every 25s during the hordes, the
+//   Climb and the finale the ground under each fighter is marked and erupts
+//   3s later: step out), the Stranded Hunters (the old hunters of Mjolnir, 5
+//   to rescue across the hordes and the Climb with Nightwing's links; each one
+//   blesses the party and adds to the spoils), the Hunter's Bells (at 66% and
+//   33% the eclipse shields James until the 4 bells around the field are
+//   rung, 2 seconds standing still each), and a grade for every night (time
+//   and falls: S, A, B, C), with the fastest one on John's Hall of Hunters.
 // - His reward is the Black Sun's, in a chest where he falls: base and job
 //   EXP (10% of a level each), a Grey Wolf Cub in Mouth, a Wolf Orb (Above
 //   All) Lv 3, 5 King Wolf Scrolls, 500 Premium Black Coins and a Premium
@@ -104,13 +114,39 @@ function	script	BS_Navi	{
 	return "<NAVI>" + getarg(0) + "<INFO>" + getarg(1) + "," + getarg(2) + "," + getarg(3) + ",0,000,0</INFO></NAVI>";
 }
 
+// mm:ss for <seconds>
+function	script	BS_Clock	{
+	.@t = getarg(0);
+	return (.@t / 60) + ":" + ((.@t % 60) < 10 ? "0" : "") + (.@t % 60);
+}
+
+// The Stranded Hunters: the old hunters of Mjolnir who warned of the Black Sun
+function	script	BS_HunterName	{
+	setarray .@n$[1], "Old Bram", "Ylva the Huntress", "Torvald the Archer", "Young Eir", "Sigrun the Ranger";
+	return .@n$[getarg(0)];
+}
+
 // The Black Sun's spoils for the attached character, and their 8 hour
 // cooldown: base and job EXP (10% of their current level each) and five
 // items, put in their bag -- or, with getarg(0) = 1, sent by mail (the run is
 // closing on someone who never opened the chest).
+//   callfunc "BS_GiveRewards", <mail 0|1>, "<grade>", <hunters saved>, <night's seconds>;
+// The grade adds coins (S 250 and a Ticket, A 150, B 50); every hunter saved
+// 100 coins, and all five a Ticket.
 function	script	BS_GiveRewards	{
+	.@grade$ = getarg(1, "");
+	.@hunters = getarg(2, 0);
+	.@coins = 500 + .@hunters * 100;
+	.@tickets = 1;
+	if (.@hunters >= 5) .@tickets++;
+	if (.@grade$ == "S") {
+		.@coins += 250;
+		.@tickets++;
+	} else if (.@grade$ == "A") .@coins += 150;
+	else if (.@grade$ == "B") .@coins += 50;
+	if (getarg(3, 0) > 0 && (!BS_Best || getarg(3) < BS_Best)) BS_Best = getarg(3);
 	setarray .@id[0], 420388, 310581, 22510, 1001258, 1002640;	// Grey Wolf Cub in Mouth, Wolf Orb (Above All) Lv 3, King Wolf Scroll, Premium Black Coin, Premium Black Ticket
-	setarray .@n[0],       1,      1,     5,     500,       1;
+	setarray .@n[0],       1,      1,     5,  .@coins, .@tickets;
 	.@base = getbaseexp_ratio(10);
 	.@job = getjobexp_ratio(10);
 	if (.@base || .@job) getexp .@base, .@job;
@@ -119,7 +155,7 @@ function	script	BS_GiveRewards	{
 		dispbottom "[Black Sun] The Black Sun's spoils were sent to your mailbox.";
 	} else {
 		for (.@i = 0; .@i < 5; .@i++) getitem .@id[.@i], .@n[.@i];
-		dispbottom "[Black Sun] You took the Black Sun's spoils: a Grey Wolf Cub in Mouth, a Wolf Orb (Above All) Lv 3, 5 King Wolf Scrolls, 500 Premium Black Coins and a Premium Black Ticket.";
+		dispbottom "[Black Sun] You took the Black Sun's spoils: a Grey Wolf Cub in Mouth, a Wolf Orb (Above All) Lv 3, 5 King Wolf Scrolls, " + .@coins + " Premium Black Coins and " + .@tickets + " Premium Black Ticket(s).";
 	}
 	BS_Cooldown = gettimetick(2) + 28800;
 	return;
@@ -148,6 +184,13 @@ prontera,113,190,4	script	John Wolf	10295,{
 	mes "If James is still up there when the Black Sun rises, I don't know what will come back down. Maybe nothing that remembers my name.";
 	mes "Please. Find him before it's too late.";
 	next;
+	// the Hall of Hunters: the fastest night, and yours
+	if ($BS_BestTime) {
+		mes "[John Wolf]";
+		mes "^0000FFHall of Hunters^000000: the fastest night on the mountain took ^0000FF" + callfunc("BS_Clock", $BS_BestTime) + "^000000 (grade " + $BS_BestGrade$ + "), by ^0000FF" + $BS_BestBy$ + "^000000.";
+		if (BS_Best) mes "Your own best: ^0000FF" + callfunc("BS_Clock", BS_Best) + "^000000.";
+		next;
+	}
 	switch (select("Climb Mt. Mjolnir (Black Sun):Exchange Premium Black Coins:Exchange a Premium Black Ticket:Nothing today")) {
 	case 1:
 		callsub L_Enter;
@@ -306,6 +349,9 @@ OnPCLoadMapEvent:
 		next;
 		mes "[Nightwing]";
 		mes "Break the pack. Cut down ^FF0000150 of each kind^000000, and their alphas will have no choice but to come out and face us. Then we follow James's trail.";
+		next;
+		mes "[Nightwing]";
+		mes "The ones crowned in moonlight are the pack's best: ^FFCC00each is worth ten^000000. When the ^FF0000Black Sun's gaze^000000 falls on you, move. And the old hunters who warned us came up here too... if you see one, ^0000FFget them out^000000.";
 		callfunc "BS_Portrait", 0;
 		close2;
 		hideonnpc instance_npcname("Nightwing#BS");
@@ -400,9 +446,12 @@ OnInstanceInit:
 	'bs_sky = 1;
 	'bs_skySent = 100;
 	// nif_fild03 is an ordinary field: its warps and other NPCs were copied in
-	// with it. Only the run's own five stay.
+	// with it. Only the run's own stay.
 	.@m$ = instance_mapname("nif_fild03");
-	setarray .@mine[0], getnpcid(0, instance_npcname("James Wolf#BS3")), getnpcid(0, instance_npcname("John Wolf#BS3")), getnpcid(0, instance_npcname("Nightwing#BS3")), getnpcid(0, instance_npcname("Spoils of the Black Sun#BS3")), getnpcid(0, instance_npcname("BS_Point#3"));
+	setarray .@keep$[0], "James Wolf#BS3", "John Wolf#BS3", "Nightwing#BS3", "Spoils of the Black Sun#BS3", "BS_Point#3";
+	for (.@i = 0; .@i < 8; .@i++) .@keep$[getarraysize(.@keep$)] = "Black Sun's Gaze#BSc" + .@i;
+	for (.@i = 0; .@i < 4; .@i++) .@keep$[getarraysize(.@keep$)] = "Hunter's Bell#BSB" + .@i;
+	for (.@i = 0; .@i < getarraysize(.@keep$); .@i++) .@mine[.@i] = getnpcid(0, instance_npcname(.@keep$[.@i]));
 	.@n = getmapunits(BL_NPC, .@m$, .@gid);
 	for (.@i = 0; .@i < .@n; .@i++) {
 		if (inarray(.@mine, .@gid[.@i]) >= 0) continue;
@@ -412,6 +461,7 @@ OnInstanceInit:
 	setmapflag .@m$, MF_NOPENALTY;
 	setmapflag .@m$, MF_NOTELEPORT;
 	setmapflag .@m$, MF_NOMEMO;
+	'bs_gzAt = gettimetick(2) + 25;
 	initnpctimer;
 	end;
 
@@ -498,11 +548,22 @@ OnK0: callsub L_Kill, 0; end;
 OnK1: callsub L_Kill, 1; end;
 OnK2: callsub L_Kill, 2; end;
 
+// A Moon-Crowned beast of slot 0 / 1 / 2: 10 kills, and Nightwing's blessing
+OnMoon0: callsub L_Kill, 0, 10; callsub L_MoonDown; end;
+OnMoon1: callsub L_Kill, 1, 10; callsub L_MoonDown; end;
+OnMoon2: callsub L_Kill, 2, 10; callsub L_MoonDown; end;
+
+L_MoonDown:
+	'bs_bless = 1;	// the loop blesses the party (never attach in a kill script)
+	instance_announce 0, "[Nightwing]: A Moon-Crowned beast has fallen! My blessing on all of you!", bc_map, "0xFFCC00";
+	return;
+
 L_Kill:
 	if ('bs_stage != 1 && 'bs_stage != 5 && 'bs_stage != 7) return;
 	.@t = getarg(0);
 	callsub L_Cfg, 'bs_cfg;
-	if ('bs_k[.@t] < .goal[.@t]) 'bs_k[.@t]++;
+	'bs_k[.@t] += getarg(1, 1);	// a Moon-Crowned beast counts for 10
+	if ('bs_k[.@t] > .goal[.@t]) 'bs_k[.@t] = .goal[.@t];
 	if (playerattached())
 		dispbottom "[Black Sun] " + .nm$[0] + " " + 'bs_k[0] + "/" + .goal[0] + " | " + .nm$[1] + " " + 'bs_k[1] + "/" + .goal[1] + " | " + .nm$[2] + " " + 'bs_k[2] + "/" + .goal[2];
 	for (.@i = 0; .@i < 3; .@i++)
@@ -556,6 +617,17 @@ OnClimb:
 				if (distance(.@x, .@y, 320, 79) >= 20) break;
 			}
 			monster .@m$, .@x, .@y, "--ja--", .@id, 1, .@ev$, Size_Large;
+			callsub L_Freeze, $@mobid[0], 320, 79;
+		}
+	}
+	// the Moon-Crowned: 2 of each kind, frozen with the rest
+	for (.@t = 0; .@t < 3; .@t++) {
+		for (.@c = 0; .@c < 2; .@c++) {
+			for (.@try = 0; .@try < 50; .@try++) {
+				getfreecell(.@m$, .@x, .@y);
+				if (distance(.@x, .@y, 320, 79) >= 20) break;
+			}
+			callsub L_MoonAt, .@m$, .@x, .@y, .@t;
 			callsub L_Freeze, $@mobid[0], 320, 79;
 		}
 	}
@@ -613,6 +685,22 @@ OnJamesKill:
 	'bs_mvp = 0;
 	'bs_sky = 0;
 	killmonster instance_mapname("nif_fild03"), "All";
+	'bs_shield = 0;
+	for (.@b = 0; .@b < 4; .@b++) hideonnpc instance_npcname("Hunter's Bell#BSB" + .@b);
+	// the night's grade: time and falls (S: no falls and under 45 minutes,
+	// A: 2 falls at most and under 60, B: under 75, C: the rest)
+	'bs_time = gettimetick(2) - 'bs_run;
+	if ('bs_deaths == 0 && 'bs_time <= 2700) 'bs_grade$ = "S";
+	else if ('bs_deaths <= 2 && 'bs_time <= 3600) 'bs_grade$ = "A";
+	else if ('bs_time <= 4500) 'bs_grade$ = "B";
+	else 'bs_grade$ = "C";
+	instance_announce 0, "[Black Sun]: The night took " + callfunc("BS_Clock", 'bs_time) + " with " + 'bs_deaths + " fall(s) and " + 'bs_hunters + "/5 hunters saved: grade " + 'bs_grade$ + "!", bc_map, "0xFFCC00";
+	if (!$BS_BestTime || 'bs_time < $BS_BestTime) {
+		$BS_BestTime = 'bs_time;
+		$BS_BestGrade$ = 'bs_grade$;
+		$BS_BestBy$ = 'bs_owner$ + ('bs_party ? "'s party" : "");
+		announce "[Black Sun] " + $BS_BestBy$ + " brought James home in " + callfunc("BS_Clock", 'bs_time) + ", a new record for the Hall of Hunters!", bc_all, "0xFFCC00";
+	}
 	hideoffnpc instance_npcname("Spoils of the Black Sun#BS3");
 	specialeffect EF_BEGINSPELL7, AREA, instance_npcname("Spoils of the Black Sun#BS3");
 	instance_announce 0, "[Nightwing]: The Black Sun is setting! James is down...", bc_map, "0x99CCFF";
@@ -629,7 +717,7 @@ OnFinish:
 			// whoever never opened the chest gets their share by mail
 			if (BS_Rewarded != 'bs_run) {
 				BS_Rewarded = 'bs_run;
-				callfunc "BS_GiveRewards", 1;
+				callfunc "BS_GiveRewards", 1, 'bs_grade$, 'bs_hunters, 'bs_time;
 			}
 			warp "prontera", 116, 187;
 			detachrid;
@@ -660,6 +748,82 @@ OnTimer1000:
 
 	// the landing on the crag stays clear while the hordes are out
 	if ('bs_stage == 1 || 'bs_stage == 5) callsub L_SafeZone;
+
+	// Nightwing's blessing on the party (a Moon-Crowned fell, or a hunter was saved)
+	if ('bs_bless) {
+		'bs_bless = 0;
+		setarray .@maps$[0], "1@mjo1", "1@mjo2", "nif_fild03";
+		for (.@mp = 0; .@mp < 3; .@mp++) {
+			.@n = getmapunits(BL_PC, instance_mapname(.@maps$[.@mp]), .@pc);
+			for (.@i = 0; .@i < .@n; .@i++) {
+				if (!attachrid(.@pc[.@i])) continue;
+				if (Hp > 0) {
+					sc_start SC_BLESSING, 120000, 10;
+					sc_start SC_INCREASEAGI, 120000, 10;
+					specialeffect2 EF_BLESSING;
+				}
+				detachrid;
+			}
+		}
+	}
+
+	// the Black Sun's Gaze: marks every 25s during the hordes, the Climb (once
+	// it has woken) and the finale, and erupts 3s after
+	.@gzMap$ = "";
+	if ('bs_stage == 1 || 'bs_stage == 5) { .@gzMap$ = "1@mjo1"; .@gzL$ = "a"; }
+	else if ('bs_stage == 7 && !'bs_wake) { .@gzMap$ = "1@mjo2"; .@gzL$ = "b"; }
+	else if ('bs_stage == 10) { .@gzMap$ = "nif_fild03"; .@gzL$ = "c"; }
+	if ('bs_gzHide && gettimetick(2) >= 'bs_gzHide) {
+		'bs_gzHide = 0;
+		setarray .@lt$[0], "a", "b", "c";
+		for (.@l = 0; .@l < 3; .@l++)
+			for (.@h = 0; .@h < 8; .@h++) hideonnpc instance_npcname("Black Sun's Gaze#BS" + .@lt$[.@l] + .@h);
+	}
+	if ('bs_gzBoom && gettimetick(2) >= 'bs_gzBoom) callsub L_GazeBoom;
+	else if (.@gzMap$ != "" && gettimetick(2) >= 'bs_gzAt) callsub L_GazeMark, .@gzMap$, .@gzL$;
+	else if (.@gzMap$ == "" && gettimetick(2) >= 'bs_gzAt) 'bs_gzAt = gettimetick(2) + 10;	// the first mark comes 10s into the next fight
+
+	// the Stranded Hunters: Horde 1 (30%, 70%), Horde 2 (30%, 70%), the Climb
+	// (50%); one left alone 3 minutes is lost
+	if ('bs_stage == 1 || 'bs_stage == 5 || ('bs_stage == 7 && !'bs_wake)) {
+		callsub L_Cfg, 'bs_cfg;
+		.@pct = ('bs_k[0] + 'bs_k[1] + 'bs_k[2]) * 100 / (.goal[0] + .goal[1] + .goal[2]);
+		if ('bs_stage == 1) {
+			if (.@pct >= 30 && !('bs_hunterSeen & (1 << 1))) callsub L_HunterAppear, 1;
+			if (.@pct >= 70 && !('bs_hunterSeen & (1 << 2))) callsub L_HunterAppear, 2;
+		} else if ('bs_stage == 5) {
+			if (.@pct >= 30 && !('bs_hunterSeen & (1 << 3))) callsub L_HunterAppear, 3;
+			if (.@pct >= 70 && !('bs_hunterSeen & (1 << 4))) callsub L_HunterAppear, 4;
+		} else {
+			if (.@pct >= 50 && !('bs_hunterSeen & (1 << 5))) callsub L_HunterAppear, 5;
+		}
+	}
+	for (.@h = 1; .@h <= 5; .@h++)
+		if (('bs_hunterOut & (1 << .@h)) && gettimetick(2) >= 'bs_hunterT[.@h] + 180) {
+			'bs_hunterOut = 'bs_hunterOut & ~(1 << .@h);
+			hideonnpc instance_npcname(callfunc("BS_HunterName", .@h) + "#BSH" + .@h);
+			instance_announce 0, "[Nightwing]: Too late... the beasts found " + callfunc("BS_HunterName", .@h) + ".", bc_map, "0xFF4444";
+		}
+	// Nightwing points everyone on the hunter's map to them
+	if ('bs_hunterPoint) {
+		'bs_hunterPoint = 0;
+		.@hm$ = ('bs_hunterNow == 5 ? "1@mjo2" : "1@mjo1");
+		.@n = getmapunits(BL_PC, instance_mapname(.@hm$), .@pc);
+		for (.@i = 0; .@i < .@n; .@i++) {
+			if (!attachrid(.@pc[.@i])) continue;
+			addtimer 500, instance_npcname("BS_Point#" + ('bs_hunterNow == 5 ? 2 : 1)) + "::OnHunter";
+			detachrid;
+		}
+	}
+
+	// the Hunter's Bells: at 66% and 33% of his HP the eclipse shields James
+	if ('bs_stage == 10 && 'bs_mvp && !'bs_shield && 'bs_shieldPhase < 2 && unitexists('bs_mvp)) {
+		getunitdata 'bs_mvp, .@jd;
+		if (.@jd[UMOB_MAXHP] > 0) {
+			.@pct = .@jd[UMOB_HP] * 100 / .@jd[UMOB_MAXHP];
+			if (('bs_shieldPhase == 0 && .@pct <= 66) || ('bs_shieldPhase == 1 && .@pct <= 33)) callsub L_Shield;
+		}
+	}
 
 	// the finale: every 15 seconds the Black Sun calls 35 beasts around one of
 	// the fighters near James, picked at random (his werewolf face flashes up
@@ -745,6 +909,8 @@ OnTimer1000:
 	case 11: .@info$ = ('bs_jamesBack ? "Talk to James" : "Open the chest where James fell"); break;
 	default: .@info$ = "Talk to James";
 	}
+	if ('bs_stage == 10 && 'bs_shield) .@info$ = "Ring the Hunter's Bells " + 'bs_bells + "/4";
+	if ('bs_stage >= 1) .@info$ += " | Hunters " + 'bs_hunters + "/5";
 	setarray .@maps$[0], "1@mjo1", "1@mjo2", "nif_fild03";
 	for (.@mp = 0; .@mp < 3; .@mp++) {
 		.@n = getmapunits(BL_PC, instance_mapname(.@maps$[.@mp]), .@pc);
@@ -766,7 +932,140 @@ L_StartHorde:
 	.@m$ = instance_mapname("1@mjo1");
 	for (.@i = 0; .@i < 3; .@i++)
 		areamonster .@m$, 70, 100, 330, 335, "--ja--", .id[.@i], .spawn[.@i], instance_npcname("BS_Engine") + "::OnK" + .@i, Size_Large;
+	// the Moon-Crowned: 2 of each kind
+	for (.@i = 0; .@i < 3; .@i++)
+		for (.@c = 0; .@c < 2; .@c++) {
+			for (.@try = 0; .@try < 50; .@try++) {
+				getfreecell(.@m$, .@x, .@y, 200, 217, 130, 117);
+				if (distance(.@x, .@y, 219, 379) >= 30) break;
+			}
+			callsub L_MoonAt, .@m$, .@x, .@y, .@i;
+		}
+	instance_announce 0, "[Nightwing]: Six Moon-Crowned beasts lead them. Each one is worth ten!", bc_map, "0xFFCC00";
 	return;
+
+// A Moon-Crowned beast of the current stage's slot <0..2> on <map> <x>,<y>:
+// gold-crowned, large, 4x the HP (its id in $@mobid[0])
+//   callsub L_MoonAt, "<map>", <x>, <y>, <slot>;
+L_MoonAt:
+	.@mob = .id[getarg(3)];	// the caller has just run L_Cfg
+	monster getarg(0), getarg(1), getarg(2), "Moon-Crowned " + .nm$[getarg(3)], .@mob, 1, instance_npcname("BS_Engine") + "::OnMoon" + getarg(3), Size_Large;
+	.@g = $@mobid[0];
+	if (!.@g || !unitexists(.@g)) return;
+	.@hp = getmonsterinfo(.@mob, MOB_MAXHP) * 4;
+	setunitdata .@g, UMOB_MAXHP, .@hp;
+	setunitdata .@g, UMOB_HP, .@hp;
+	hateffect HAT_EF_SUBJECT_AURA_GOLD, true, .@g;
+	return;
+
+// The Black Sun's Gaze falls: the ground under every fighter on <map> is
+// marked with the copy of the gaze marks <letter> (a 1@mjo1, b 1@mjo2,
+// c nif_fild03)...
+L_GazeMark:
+	'bs_gzAt = gettimetick(2) + 25;
+	'bs_gzBoom = gettimetick(2) + 3;
+	'bs_gzN = 0;
+	'bs_gzMap$ = getarg(0);
+	'bs_gzL$ = getarg(1);
+	.@m$ = instance_mapname(getarg(0));
+	.@n = getmapunits(BL_PC, .@m$, .@pc);
+	for (.@i = 0; .@i < .@n && 'bs_gzN < 8; .@i++) {
+		if (!attachrid(.@pc[.@i])) continue;
+		getmapxy(.@pm$, .@px, .@py, BL_PC);
+		if (.@pm$ == .@m$ && Hp > 0) {
+			'bs_gzX['bs_gzN] = .@px;
+			'bs_gzY['bs_gzN] = .@py;
+			.@np$ = instance_npcname("Black Sun's Gaze#BS" + 'bs_gzL$ + 'bs_gzN);
+			movenpc .@np$, .@px, .@py;
+			hideoffnpc .@np$;
+			specialeffect EF_BEGINSPELL7, AREA, .@np$;
+			dispbottom "[Black Sun] The Black Sun's gaze falls on you! MOVE!", 0xFF4444;
+			'bs_gzN++;
+		}
+		detachrid;
+	}
+	return;
+
+// ...and 3 seconds later it burns: whoever is still within 2 cells loses 30%
+// of their HP (it can't kill)
+L_GazeBoom:
+	'bs_gzBoom = 0;
+	'bs_gzHide = gettimetick(2) + 2;
+	for (.@h = 0; .@h < 'bs_gzN; .@h++)
+		specialeffect EF_SUI_EXPLOSION, AREA, instance_npcname("Black Sun's Gaze#BS" + 'bs_gzL$ + .@h);
+	.@m$ = instance_mapname('bs_gzMap$);
+	.@n = getmapunits(BL_PC, .@m$, .@pc);
+	for (.@i = 0; .@i < .@n; .@i++) {
+		if (!attachrid(.@pc[.@i])) continue;
+		getmapxy(.@pm$, .@px, .@py, BL_PC);
+		.@hit = 0;
+		for (.@h = 0; .@h < 'bs_gzN; .@h++)
+			if (.@pm$ == .@m$ && distance(.@px, .@py, 'bs_gzX[.@h], 'bs_gzY[.@h]) <= 2) .@hit = 1;
+		if (.@hit && Hp > 0) {
+			percentheal -30, 0;
+			dispbottom "[Black Sun] The Black Sun's gaze burns you!", 0xFF4444;
+		}
+		detachrid;
+	}
+	return;
+
+// A Stranded Hunter appears: hunters 1-4 on the crag (away from the trail
+// head), hunter 5 on the Climb (away from the landing). Nightwing points
+// the way (the loop).
+L_HunterAppear:
+	.@h = getarg(0);
+	'bs_hunterSeen = 'bs_hunterSeen | (1 << .@h);
+	if (.@h == 5) {
+		.@m$ = instance_mapname("1@mjo2");
+		for (.@try = 0; .@try < 50; .@try++) {
+			getfreecell(.@m$, .@x, .@y);
+			if (distance(.@x, .@y, 320, 79) >= 30) break;
+		}
+	} else {
+		.@m$ = instance_mapname("1@mjo1");
+		for (.@try = 0; .@try < 50; .@try++) {
+			getfreecell(.@m$, .@x, .@y, 200, 217, 130, 117);
+			if (distance(.@x, .@y, 219, 379) >= 30) break;
+		}
+	}
+	if (.@try >= 50) return;	// no place found: this hunter never shows
+	.@np$ = instance_npcname(callfunc("BS_HunterName", .@h) + "#BSH" + .@h);
+	movenpc .@np$, .@x, .@y;
+	hideoffnpc .@np$;
+	'bs_hunterOut = 'bs_hunterOut | (1 << .@h);
+	'bs_hunterT[.@h] = gettimetick(2);
+	'bs_hunterNow = .@h;
+	'bs_hunterX = .@x;
+	'bs_hunterY = .@y;
+	'bs_hunterPoint = 1;
+	instance_announce 0, "[Nightwing]: One of the old hunters is stranded out there! Find " + callfunc("BS_HunterName", .@h) + " before the beasts do!", bc_map, "0xFFCC00";
+	return;
+
+// The eclipse swallows James: he's immune until the 4 Hunter's Bells ring
+L_Shield:
+	'bs_shieldPhase++;
+	'bs_shield = 1;
+	'bs_bells = 0;
+	'bs_bellMask = 0;
+	setunitdata 'bs_mvp, UMOB_DMGIMMUNE, 1;
+	for (.@b = 0; .@b < 4; .@b++) hideoffnpc instance_npcname("Hunter's Bell#BSB" + .@b);
+	instance_announce 0, "[Black Sun]: The eclipse swallows James whole! Nothing can touch him now!", bc_map, "0xFF0000";
+	instance_announce 0, "[John Wolf]: The hunters' bells! James always came home when they rang! Ring all four!", bc_map, "0x99CCFF";
+	return;
+
+// A bell rang (Hunter's Bell#BSB<n>): the 4th breaks the eclipse's hold
+OnBellRung:
+	if ('bs_stage != 10 || !'bs_shield) end;
+	if ('bs_bells < 4) {
+		instance_announce 0, "[John Wolf]: A bell rings out over the field! " + 'bs_bells + "/4!", bc_map, "0x99CCFF";
+		end;
+	}
+	'bs_shield = 0;
+	if ('bs_mvp && unitexists('bs_mvp)) setunitdata 'bs_mvp, UMOB_DMGIMMUNE, 0;
+	for (.@b = 0; .@b < 4; .@b++) hideonnpc instance_npcname("Hunter's Bell#BSB" + .@b);
+	instance_announce 0, "[John Wolf]: JAMES! Come home!", bc_map, "0x99CCFF";
+	instance_announce 0, "[Nightwing]: He heard the bells! The eclipse is tearing away from him. Strike now!", bc_map, "0x99CCFF";
+	end;
 
 // .id / .nm$ / .ab$ / .goal / .spawn for stage <1|2|3>: Horde 1, Horde 2, the
 // Climb. Each holds more than the one before.
@@ -971,6 +1270,14 @@ OnAlphaTalk:
 	callfunc "BS_Portrait", 0;
 	if (getcharid(0) == 'bs_owner) donpcevent instance_npcname("BS_Engine") + "::OnAlphaWake";
 	end;
+// A Stranded Hunter has shown up (the engine's loop, for everyone on their map)
+OnHunter:
+	if (!'bs_hunterNow || !('bs_hunterOut & (1 << 'bs_hunterNow))) end;
+	callfunc "BS_Portrait", ('bs_stage >= 3 ? 2 : 1);
+	mes "[Nightwing]";
+	mes "Wait... that's ^0000FF" + callfunc("BS_HunterName", 'bs_hunterNow) + "^000000, one of the old hunters! Stranded " + callfunc("BS_Navi", "over there", ('bs_hunterNow == 5 ? "1@mjo2" : "1@mjo1"), 'bs_hunterX, 'bs_hunterY) + ". Get them out before the beasts do!";
+	callfunc "BS_Portrait", 0;
+	close;
 OnPoint:
 	.@stage = 'bs_stage;
 	switch (.@stage) {
@@ -1014,6 +1321,91 @@ OnPoint:
 }
 1@mjo2,1,1,0	duplicate(BS_Point#1)	BS_Point#2	-1
 nif_fild03,1,1,0	duplicate(BS_Point#1)	BS_Point#3	-1
+
+// --- The Stranded Hunters: the old hunters of Mjolnir, who came up the
+// mountain after the Black Sun. Hunters 1-4 on the crag, 5 on the Climb
+// (L_HunterAppear). Anyone in the run can lead them down.
+1@mjo1,1,1,4	script	Old Bram#BSH1	732,{
+	.@h = atoi(charat(strnpcinfo(2), 3));	// BSH<n>
+	if (!('bs_hunterOut & (1 << .@h))) end;
+	setarray .@line$[1],
+		"Forty winters I've hunted this crag, and I never saw the wolves this mad. The old songs were right about the Black Sun... I wish they weren't.",
+		"My bow string snapped on the third one. I've been hiding behind this rock, counting heartbeats. Yours is the first one that isn't a wolf's.",
+		"I warned John. I told him: when the moon eats the sun, the curse comes due. I didn't think I'd be up here to see it.",
+		"I followed the old ones up here to prove I'm a real hunter. Now I just want to go home. Is that... is that cowardly?",
+		"I tracked James's prints up the switchbacks. They stopped being a man's prints halfway up. Find him. Bring him back.";
+	.@who$ = strnpcinfo(1);	// the visible name
+	mes "[" + .@who$ + "]";
+	mes .@line$[.@h];
+	next;
+	mes "[" + .@who$ + "]";
+	mes "Nightwing's trail down the ridge? I know it like my own bow. Go on, finish this. I'll tell the whole village who came back for us.";
+	close2;
+	if (!('bs_hunterOut & (1 << .@h))) end;	// someone else got there first
+	'bs_hunterOut = 'bs_hunterOut & ~(1 << .@h);
+	'bs_hunters++;
+	'bs_bless = 1;	// the loop blesses the party
+	specialeffect EF_ANGEL, AREA, strnpcinfo(3);
+	hideonnpc strnpcinfo(3);
+	instance_announce 0, "[Nightwing]: " + .@who$ + " is safe! Stranded Hunters rescued: " + 'bs_hunters + "/5. My blessing on all of you!", bc_map, "0xFFCC00";
+	end;
+OnInit:
+	hideonnpc strnpcinfo(3);
+	end;
+OnInstanceInit:
+	hideonnpc strnpcinfo(3);
+	end;
+}
+1@mjo1,1,1,4	duplicate(Old Bram#BSH1)	Ylva the Huntress#BSH2	727
+1@mjo1,1,1,4	duplicate(Old Bram#BSH1)	Torvald the Archer#BSH3	634
+1@mjo1,1,1,4	duplicate(Old Bram#BSH1)	Young Eir#BSH4	642
+1@mjo2,1,1,4	duplicate(Old Bram#BSH1)	Sigrun the Ranger#BSH5	10148
+
+// --- The Black Sun's Gaze marks: an invisible body (111) to show the effects
+// on, 8 on each of the run's maps (a the crag, b the Climb, c Niflheim)
+1@mjo1,1,1,4	script	Black Sun's Gaze#BSa0	111,{
+	end;
+OnInit:
+	hideonnpc strnpcinfo(3);
+	end;
+OnInstanceInit:
+	hideonnpc strnpcinfo(3);
+	end;
+}
+1@mjo1,1,1,4	duplicate(Black Sun's Gaze#BSa0)	Black Sun's Gaze#BSa1	111
+1@mjo1,1,1,4	duplicate(Black Sun's Gaze#BSa0)	Black Sun's Gaze#BSa2	111
+1@mjo1,1,1,4	duplicate(Black Sun's Gaze#BSa0)	Black Sun's Gaze#BSa3	111
+1@mjo1,1,1,4	duplicate(Black Sun's Gaze#BSa0)	Black Sun's Gaze#BSa4	111
+1@mjo1,1,1,4	duplicate(Black Sun's Gaze#BSa0)	Black Sun's Gaze#BSa5	111
+1@mjo1,1,1,4	duplicate(Black Sun's Gaze#BSa0)	Black Sun's Gaze#BSa6	111
+1@mjo1,1,1,4	duplicate(Black Sun's Gaze#BSa0)	Black Sun's Gaze#BSa7	111
+1@mjo2,1,1,4	duplicate(Black Sun's Gaze#BSa0)	Black Sun's Gaze#BSb0	111
+1@mjo2,1,1,4	duplicate(Black Sun's Gaze#BSa0)	Black Sun's Gaze#BSb1	111
+1@mjo2,1,1,4	duplicate(Black Sun's Gaze#BSa0)	Black Sun's Gaze#BSb2	111
+1@mjo2,1,1,4	duplicate(Black Sun's Gaze#BSa0)	Black Sun's Gaze#BSb3	111
+1@mjo2,1,1,4	duplicate(Black Sun's Gaze#BSa0)	Black Sun's Gaze#BSb4	111
+1@mjo2,1,1,4	duplicate(Black Sun's Gaze#BSa0)	Black Sun's Gaze#BSb5	111
+1@mjo2,1,1,4	duplicate(Black Sun's Gaze#BSa0)	Black Sun's Gaze#BSb6	111
+1@mjo2,1,1,4	duplicate(Black Sun's Gaze#BSa0)	Black Sun's Gaze#BSb7	111
+nif_fild03,1,1,4	duplicate(Black Sun's Gaze#BSa0)	Black Sun's Gaze#BSc0	111
+nif_fild03,1,1,4	duplicate(Black Sun's Gaze#BSa0)	Black Sun's Gaze#BSc1	111
+nif_fild03,1,1,4	duplicate(Black Sun's Gaze#BSa0)	Black Sun's Gaze#BSc2	111
+nif_fild03,1,1,4	duplicate(Black Sun's Gaze#BSa0)	Black Sun's Gaze#BSc3	111
+nif_fild03,1,1,4	duplicate(Black Sun's Gaze#BSa0)	Black Sun's Gaze#BSc4	111
+nif_fild03,1,1,4	duplicate(Black Sun's Gaze#BSa0)	Black Sun's Gaze#BSc5	111
+nif_fild03,1,1,4	duplicate(Black Sun's Gaze#BSa0)	Black Sun's Gaze#BSc6	111
+nif_fild03,1,1,4	duplicate(Black Sun's Gaze#BSa0)	Black Sun's Gaze#BSc7	111
+
+// --- Every fall in the run counts against its grade ---
+-	script	BS_Falls	-1,{
+OnPCDieEvent:
+	.@iid = callfunc("BS_RunID");
+	if (.@iid <= 0 || instance_live_info(ILI_NAME, .@iid) != "Black Sun") end;
+	.@m$ = strcharinfo(3);
+	if (.@m$ != instance_mapname("1@mjo1", .@iid) && .@m$ != instance_mapname("1@mjo2", .@iid) && .@m$ != instance_mapname("nif_fild03", .@iid)) end;
+	setinstancevar 'bs_deaths, getinstancevar('bs_deaths, .@iid) + 1, .@iid;
+	end;
+}
 
 // === The Climb and the summit: 1@mjo2 ========================================
 
@@ -1111,6 +1503,30 @@ OnInstanceInit:
 	end;
 }
 
+// The Hunter's Bells around the field: when the eclipse shields James (66%
+// and 33% of his HP), clicking one and standing still beside it for 2 seconds
+// rings it; the 4th breaks the shield (BS_Engine::OnBellRung).
+nif_fild03,193,196,4	script	Hunter's Bell#BSB0	2917,{
+	.@b = atoi(charat(strnpcinfo(2), 3));	// BSB<n>
+	if ('bs_stage != 10 || !'bs_shield || ('bs_bellMask & (1 << .@b))) end;
+	progressbar "ffffff", 2;	// stand still: moving breaks it off
+	if ('bs_stage != 10 || !'bs_shield || ('bs_bellMask & (1 << .@b))) end;
+	'bs_bellMask = 'bs_bellMask | (1 << .@b);
+	'bs_bells++;
+	specialeffect EF_GLORIA, AREA, strnpcinfo(3);
+	donpcevent instance_npcname("BS_Engine") + "::OnBellRung";
+	end;
+OnInit:
+	hideonnpc strnpcinfo(3);
+	end;
+OnInstanceInit:
+	hideonnpc strnpcinfo(3);
+	end;
+}
+nif_fild03,211,188,4	duplicate(Hunter's Bell#BSB0)	Hunter's Bell#BSB1	2917
+nif_fild03,202,186,4	duplicate(Hunter's Bell#BSB0)	Hunter's Bell#BSB2	2917
+nif_fild03,202,205,4	duplicate(Hunter's Bell#BSB0)	Hunter's Bell#BSB3	2917
+
 // The Black Sun's spoils: a chest where James falls. Everyone in the run opens
 // it once for their own share (BS_GiveRewards); whoever leaves without it gets
 // theirs by mail when the run closes (OnFinish).
@@ -1121,14 +1537,19 @@ nif_fild03,205,194,4	script	Spoils of the Black Sun#BS3	10405,{
 		mes "You've already taken your share.";
 		close;
 	}
-	if (!checkweight(420388, 1, 310581, 1, 22510, 5, 1001258, 500, 1002640, 1)) {
+	if (!checkweight(420388, 1, 310581, 1, 22510, 5, 1001258, 1250, 1002640, 3)) {
 		mes "[Spoils of the Black Sun]";
 		mes "^FF0000You can't carry it all. Make some room in your bag (weight and slots) and open the chest again.^000000";
 		close;
 	}
+	mes "[Spoils of the Black Sun]";
+	mes "The night: ^0000FF" + callfunc("BS_Clock", 'bs_time) + "^000000 | Falls: ^0000FF" + 'bs_deaths + "^000000 | Stranded Hunters saved: ^0000FF" + 'bs_hunters + "/5^000000";
+	mes "Grade: ^FF0000" + 'bs_grade$ + "^000000";
+	close2;
+	if (BS_Rewarded == 'bs_run) end;	// opened twice at once
 	BS_Rewarded = 'bs_run;
 	if (getcharid(0) == 'bs_owner && !'bs_leaderTook) 'bs_leaderTook = gettimetick(2);
-	callfunc "BS_GiveRewards", 0;
+	callfunc "BS_GiveRewards", 0, 'bs_grade$, 'bs_hunters, 'bs_time;
 	specialeffect2 EF_GLORIA;
 	donpcevent instance_npcname("BS_Engine") + "::OnChestTaken";
 	end;
