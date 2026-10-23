@@ -819,8 +819,8 @@ OnTimer1000:
 	// the Hunter's Bells: at 66% and 33% of his HP the eclipse shields James
 	if ('bs_stage == 10 && 'bs_mvp && !'bs_shield && 'bs_shieldPhase < 2 && unitexists('bs_mvp)) {
 		getunitdata 'bs_mvp, .@jd;
-		if (.@jd[UMOB_MAXHP] > 0) {
-			.@pct = .@jd[UMOB_HP] * 100 / .@jd[UMOB_MAXHP];
+		if (.@jd[UMOB_MAXHP] >= 100) {
+			.@pct = .@jd[UMOB_HP] / (.@jd[UMOB_MAXHP] / 100);	// 2 billion HP: never multiply it
 			if (('bs_shieldPhase == 0 && .@pct <= 66) || ('bs_shieldPhase == 1 && .@pct <= 33)) callsub L_Shield;
 		}
 	}
