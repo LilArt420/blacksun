@@ -1,5 +1,8 @@
 # Changelog
 
+## 1.2.1
+- 🔔 The Hunter's Bells ring every time. Their 2-second bar could end a hair early on app versions before 1.7.0, and the server counted that as cancelled, so a bell never rang and James's shield never broke; a hit in the fight could also cut it off. Each bell now runs its own bar, timed by the server, and holds you still while it rings; hits can't interrupt it.
+
 ## 1.2.0
 - Moon-Crowned beasts: 2 of each kind lead Horde 1, Horde 2 and the Climb (frozen with the rest there). They wear a gold aura, have 4x the HP and count for 10 kills each, and every one that falls brings Nightwing's blessing on the party (Blessing and Increase AGI Lv 10, 2 minutes).
 - The Black Sun's Gaze: every 25 seconds during the hordes, the Climb (once it wakes) and the finale, the ground under every fighter is marked, and 3 seconds later it erupts: 30% of their HP for anyone still within 2 cells. It can't kill.
