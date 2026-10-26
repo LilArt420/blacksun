@@ -1514,11 +1514,17 @@ OnInstanceInit:
 // rings it. 2 of the 4 are true ('bs_bellTrue, new every time): the 2nd true
 // one breaks the shield (BS_Engine::OnBellRung). The other 2 are cursed and
 // turn into a blue werewolf (the Alpha Werewolf, the Druid's blue form).
+// The bar is the bell's own (progressbar_npc), timed by the server: the
+// player's own bar ends a hair early on clients before app 1.7.0, which the
+// server counts as cancelled, and a hit in the fight cancels it.
 nif_fild03,193,196,4	script	Hunter's Bell#BSB0	2917,{
 	.@b = atoi(charat(strnpcinfo(2), 3));	// BSB<n>
 	if ('bs_stage != 10 || !'bs_shield || ('bs_bellMask & (1 << .@b))) end;
-	progressbar "ffffff", 2;	// stand still: moving breaks it off
-	if ('bs_stage != 10 || !'bs_shield || ('bs_bellMask & (1 << .@b))) end;
+	if (gettimetick(2) < 'bs_ringT[.@b]) end;	// someone is ringing it right now
+	'bs_ringT[.@b] = gettimetick(2) + 3;
+	progressbar_npc "0xFFFFFF", 2;	// holds the ringer still for 2 seconds
+	'bs_ringT[.@b] = 0;
+	if ('bs_stage != 10 || !'bs_shield || ('bs_bellMask & (1 << .@b)) || Hp < 1) end;
 	'bs_bellMask = 'bs_bellMask | (1 << .@b);
 	if ('bs_bellTrue & (1 << .@b)) {
 		'bs_bells++;
